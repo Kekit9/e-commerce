@@ -1,0 +1,21 @@
+.welcome-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #9eaf9e;
+    color: white;
+    text-align: center;
+    font-family: 'Arial', sans-serif;
+    flex-direction: column;
+}
+
+.welcome-page h1 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+}
+
+.welcome-page p {
+    font-size: 1.5rem;
+    margin-top: 10px;
+}

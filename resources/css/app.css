@@ -1,0 +1,9 @@
+:root {
+    margin: 0;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background: linear-gradient(#FFFFFF, #a0aec0) fixed; /* Gradient definition and Keeps the gradient fixed while scrolling*/
+    background-size: 100% auto;  /* Prevents background from repeating */
+    height: 100%;
+}
