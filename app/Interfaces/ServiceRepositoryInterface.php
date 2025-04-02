@@ -3,16 +3,16 @@
 namespace App\Interfaces;
 
 use App\Models\Service;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 interface ServiceRepositoryInterface
 {
     /**
-     * Get all services
+     * Get all services with relationships
      *
-     * @return Collection<int, Service> Returns a collection of all services
+     * @return LengthAwarePaginator the raw pagination object
      */
-    public function all(): Collection;
+    public function getAllServices(): LengthAwarePaginator;
 
     /**
      * Create a new service record
@@ -20,7 +20,7 @@ interface ServiceRepositoryInterface
      * @param array<string, mixed> $data Service data to create
      * @return Service Returns the newly created service instance
      */
-    public function create(array $data): Service;
+    public function createService(array $data): Service;
 
     /**
      * Update an existing service record
@@ -30,7 +30,7 @@ interface ServiceRepositoryInterface
      * @return Service Returns the updated service instance
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function update(array $data, int $id): Service;
+    public function updateService(array $data, int $id): Service;
 
     /**
      * Delete a service record
@@ -39,7 +39,7 @@ interface ServiceRepositoryInterface
      * @return bool Returns true if deletion was successful
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function delete(int $id): bool;
+    public function deleteService(int $id): bool;
 
     /**
      * Find a specific service by ID
@@ -48,5 +48,5 @@ interface ServiceRepositoryInterface
      * @return Service Returns the found service instance
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function find(int $id): Service;
+    public function findService(int $id): Service;
 }

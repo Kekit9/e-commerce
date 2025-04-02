@@ -4,7 +4,7 @@ namespace App\Repositories;
 
 use App\Interfaces\ProductRepositoryInterface;
 use App\Models\Product;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class ProductRepository implements ProductRepositoryInterface
 {
@@ -26,11 +26,29 @@ class ProductRepository implements ProductRepositoryInterface
     /**
      * Get all products with relationships
      *
-     * @return Collection<int, Product> Returns collection of products with makers and services
+     * @param array $filters
+     * @param string $sortBy
+     * @param string $sortDirection
+     * @param int $perPage
+     * @return LengthAwarePaginator
      */
-    public function getAllProducts(): Collection
+    public function getAllProducts(array $filters = [], string $sortBy = 'id', string $sortDirection = 'asc', int $perPage = 10): LengthAwarePaginator
     {
-        return $this->model->with('maker', 'services')->get();
+        $query = $this->model->with('maker', 'services');
+
+        if (!empty($filters['maker_id'])) {
+            $query->where('maker_id', $filters['maker_id']);
+        }
+
+        if (!empty($filters['service_id'])) {
+            $query->whereHas('services', function($q) use ($filters) {
+                $q->where('services.id', $filters['service_id']);
+            });
+        }
+
+        $query->orderBy($sortBy, $sortDirection);
+
+        return $query->paginate($perPage);
     }
 
     /**

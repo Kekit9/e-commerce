@@ -4,8 +4,7 @@ namespace App\Services;
 
 use App\Interfaces\ServiceRepositoryInterface;
 use App\Http\Resources\ServiceResource;
-use App\Models\Service;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\JsonResponse;
 
 class ServiceService
@@ -27,14 +26,21 @@ class ServiceService
         $this->serviceRepository = $serviceRepository;
     }
 
-    /**
-     * Get all services
-     *
-     * @return Collection<int, Service> Returns a collection of all services
+    /**;
+     * @param array $filters
+     * @param string $sortBy
+     * @param string $sortDirection
+     * @param int $perPage
+     * @return LengthAwarePaginator
      */
-    public function getAllServices(): Collection
+    public function getAllServices(array $filters = [], string $sortBy = 'id', string $sortDirection = 'asc', int $perPage = 10): LengthAwarePaginator
     {
-        return $this->serviceRepository->all();
+        return $this->serviceRepository->getAllServices(
+            $filters,
+            $sortBy,
+            $sortDirection,
+            $perPage
+        );
     }
 
     /**

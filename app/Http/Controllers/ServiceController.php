@@ -4,10 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateServiceRequest;
 use App\Http\Requests\UpdateServiceRequest;
-use App\Models\Service;
 use App\Services\ServiceService;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 /**
  * @group Service Management
@@ -35,11 +34,23 @@ class ServiceController extends Controller
 
     /**
      * Get all services
-     * @return Collection<int, Service> Returns a collection of all services
+     *
+     * @return JsonResponse filtered butch of items
      */
-    public function index(): Collection
+    public function index(Request $request): JsonResponse
     {
-        return $this->serviceService->getAllServices();
+        $filters = [
+            'service_type' => $request->query('service_type'),
+        ];
+
+        $services = $this->serviceService->getAllServices(
+            $filters,
+            $request->query('sort_by', 'id'),
+            $request->query('sort_direction', 'asc'),
+            $request->query('per_page', 10)
+        );
+
+        return response()->json($services);
     }
 
     /**

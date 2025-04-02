@@ -3,16 +3,16 @@
 namespace App\Interfaces;
 
 use App\Models\Product;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 interface ProductRepositoryInterface
 {
     /**
      * Get all products with relationships
      *
-     * @return Collection<int, Product> Returns collection of products with makers and services
+     * @return LengthAwarePaginator the raw pagination object
      */
-    public function getAllProducts(): Collection;
+    public function getAllProducts(): LengthAwarePaginator;
 
     /**
      * Create a new product

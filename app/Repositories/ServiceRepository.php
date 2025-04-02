@@ -4,7 +4,7 @@ namespace App\Repositories;
 
 use App\Interfaces\ServiceRepositoryInterface;
 use App\Models\Service;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class ServiceRepository implements ServiceRepositoryInterface
 {
@@ -26,11 +26,23 @@ class ServiceRepository implements ServiceRepositoryInterface
     /**
      * Get all services
      *
-     * @return Collection<int, Service> Returns a collection of all services
+     * @param array $filters
+     * @param string $sortBy
+     * @param string $sortDirection
+     * @param int $perPage
+     * @return LengthAwarePaginator Returns a collection of all services
      */
-    public function all(): Collection
+    public function getAllServices(array $filters = [], string $sortBy = 'id', string $sortDirection = 'asc', int $perPage = 10): LengthAwarePaginator
     {
-        return $this->model->distinct()->get();
+        $query = $this->model->query();
+
+        if (!empty($filters['service_type'])) {
+            $query->where('service_type', $filters['service_type']);
+        }
+
+        $query->orderBy($sortBy, $sortDirection);
+
+        return $query->paginate($perPage);
     }
 
     /**
@@ -39,7 +51,7 @@ class ServiceRepository implements ServiceRepositoryInterface
      * @param array<string, mixed> $data Service data to create
      * @return Service Returns the newly created service instance
      */
-    public function create(array $data): Service
+    public function createService(array $data): Service
     {
         return $this->model->create($data);
     }
@@ -52,7 +64,7 @@ class ServiceRepository implements ServiceRepositoryInterface
      * @return Service Returns the updated service instance
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function update(array $data, int $id): Service
+    public function updateService(array $data, int $id): Service
     {
         $service = $this->model->findOrFail($id);
         $service->update($data);
@@ -66,7 +78,7 @@ class ServiceRepository implements ServiceRepositoryInterface
      * @return bool Returns true if deletion was successful
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function delete(int $id): bool
+    public function deleteService(int $id): bool
     {
         $service = $this->model->findOrFail($id);
         $service->delete();
@@ -80,7 +92,7 @@ class ServiceRepository implements ServiceRepositoryInterface
      * @return Service Returns the found service instance
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function find(int $id): Service
+    public function findService(int $id): Service
     {
         return $this->model->findOrFail($id);
     }

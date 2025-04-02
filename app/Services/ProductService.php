@@ -3,9 +3,8 @@
 namespace App\Services;
 
 use App\Interfaces\ProductRepositoryInterface;
-use App\Models\Product;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class ProductService
 {
@@ -27,13 +26,20 @@ class ProductService
     }
 
     /**
-     * Get all products
-     *
-     * @return Collection<int, Product> Returns collection of products with relationships
+     * @param array $filters
+     * @param string $sortBy
+     * @param string $sortDirection
+     * @param int $perPage
+     * @return LengthAwarePaginator
      */
-    public function getAllProducts(): Collection
+    public function getAllProducts(array $filters = [], string $sortBy = 'id', string $sortDirection = 'asc', int $perPage = 10): LengthAwarePaginator
     {
-        return $this->productRepository->getAllProducts();
+        return $this->productRepository->getAllProducts(
+            $filters,
+            $sortBy,
+            $sortDirection,
+            $perPage
+        );
     }
 
     /**
