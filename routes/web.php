@@ -4,7 +4,6 @@ use App\Http\Controllers\AuthorizationController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\ServiceController;
-use App\Models\Maker;
 use Illuminate\Support\Facades\Route;
 
 /*

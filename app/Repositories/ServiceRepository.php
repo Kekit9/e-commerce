@@ -28,7 +28,7 @@ class ServiceRepository implements ServiceRepositoryInterface
      *
      * @return Collection<int, Service> Returns a collection of all services
      */
-    public function all(): Collection
+    public function getAllServices(): Collection
     {
         return $this->model->distinct()->get();
     }
@@ -39,7 +39,7 @@ class ServiceRepository implements ServiceRepositoryInterface
      * @param array<string, mixed> $data Service data to create
      * @return Service Returns the newly created service instance
      */
-    public function create(array $data): Service
+    public function createService(array $data): Service
     {
         return $this->model->create($data);
     }
@@ -52,7 +52,7 @@ class ServiceRepository implements ServiceRepositoryInterface
      * @return Service Returns the updated service instance
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function update(array $data, int $id): Service
+    public function updateService(array $data, int $id): Service
     {
         $service = $this->model->findOrFail($id);
         $service->update($data);
@@ -66,7 +66,7 @@ class ServiceRepository implements ServiceRepositoryInterface
      * @return bool Returns true if deletion was successful
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function delete(int $id): bool
+    public function deleteService(int $id): bool
     {
         $service = $this->model->findOrFail($id);
         $service->delete();
@@ -80,7 +80,7 @@ class ServiceRepository implements ServiceRepositoryInterface
      * @return Service Returns the found service instance
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function find(int $id): Service
+    public function findService(int $id): Service
     {
         return $this->model->findOrFail($id);
     }
