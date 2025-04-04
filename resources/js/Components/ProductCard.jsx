@@ -1,4 +1,5 @@
 import EditProductForm from "./EditProductForm.jsx";
+import {useEffect, useState} from "react";
 
 const ProductCard = ({
                          product,
@@ -9,6 +10,12 @@ const ProductCard = ({
                          csrfToken,
                          makers
                      }) => {
+    const [isAdmin, setIsAdmin] = useState(false);
+
+    useEffect(() => {
+        const role = localStorage.getItem('userRole');
+        setIsAdmin(role === 'admin');
+    }, []);
     return (
         <div style={{
             border: "1px solid #ccc",
@@ -80,6 +87,7 @@ const ProductCard = ({
 
             </div>
 
+            {isAdmin && (
             <div style={{
                 display: "flex",
                 justifyContent: "flex-end",
@@ -111,6 +119,7 @@ const ProductCard = ({
                     Delete
                 </button>
             </div>
+            )}
 
             {isEditing && (
                 <EditProductForm
