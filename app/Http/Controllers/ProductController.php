@@ -36,11 +36,11 @@ class ProductController extends Controller
     /**
      * Get all products
      *
-     * @return Collection<int, Product> Returns collection of products
+     * @return JsonResponse Returns JsonResponse of products
      */
-    public function index(): Collection
+    public function index(): JsonResponse
     {
-        return $this->productService->getAllProducts();
+        return response()->json($this->productService->getAllProducts());
     }
 
     /**

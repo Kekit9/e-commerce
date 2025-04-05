@@ -12,6 +12,7 @@ const ProductPage = () => {
         message: ''
     });
     const [productData, setProductData] = useState([]);
+    const [currencyRates, setCurrencyRates] = useState([]);
     const [newProduct, setNewProduct] = useState({
         name: "",
         description: "",
@@ -36,9 +37,11 @@ const ProductPage = () => {
                 if (!response.ok) {
                     alert("Failed to fetch products");
                 }
-                const productsData = await response.json();
+                const { products: productsData, currency_rates } = await response.json();
 
                 setProductData(Array.isArray(productsData) ? productsData : []);
+
+                setCurrencyRates(currency_rates || []);
 
                 const uniqueMakers = Array.isArray(productsData)
                     ? [...new Map(productsData
@@ -206,6 +209,7 @@ const ProductPage = () => {
                         <ProductCard
                             key={`product-${product.id}`}
                             product={product}
+                            currencyRates={currencyRates}
                             onEdit={setEditingProduct}
                             onDelete={() => handleDeleteClick(product.id)}
                             onUpdate={handleUpdateProduct}

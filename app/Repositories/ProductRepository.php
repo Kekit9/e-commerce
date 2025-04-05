@@ -2,9 +2,9 @@
 
 namespace App\Repositories;
 
+use App\Interfaces\CurrencyRateRepositoryInterface;
 use App\Interfaces\ProductRepositoryInterface;
 use App\Models\Product;
-use Illuminate\Database\Eloquent\Collection;
 
 class ProductRepository implements ProductRepositoryInterface
 {
@@ -26,11 +26,14 @@ class ProductRepository implements ProductRepositoryInterface
     /**
      * Get all products with relationships
      *
-     * @return Collection<int, Product> Returns collection of products with makers and services
+     * @return array Returns array of products with makers and services
      */
-    public function getAllProducts(): Collection
+    public function getAllProducts(): array
     {
-        return $this->model->with('maker', 'services')->get();
+        return [
+            'products' => $this->model->with('maker', 'services')->get(),
+            'currency_rates' => app(CurrencyRateRepositoryInterface::class)->getAllRates()
+        ];
     }
 
     /**

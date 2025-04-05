@@ -29,9 +29,9 @@ class ProductService
     /**
      * Get all products
      *
-     * @return Collection<int, Product> Returns collection of products with relationships
+     * @return array Returns array of products with relationships
      */
-    public function getAllProducts(): Collection
+    public function getAllProducts(): array
     {
         return $this->productRepository->getAllProducts();
     }

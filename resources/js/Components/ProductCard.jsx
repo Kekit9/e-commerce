@@ -2,6 +2,7 @@ import EditProductForm from "./EditProductForm.jsx";
 
 const ProductCard = ({
                          product,
+                         currencyRates,
                          onEdit,
                          onDelete,
                          onUpdate,
@@ -9,6 +10,26 @@ const ProductCard = ({
                          csrfToken,
                          makers
                      }) => {
+
+    const convertPrice = (price, currencyIso) => {
+        if (!currencyRates || currencyIso === 'BYN') return price;
+
+        const rate = currencyRates.find(r => r.currency_iso === currencyIso);
+        if (!rate) return price;
+
+        return (price / rate.buy_rate).toFixed(2);
+    };
+
+    const getCurrencySymbol = (currency) => {
+        const symbols = {
+            'USD': '$',
+            'EUR': '€',
+            'RUB': '₽',
+            'BYN': 'Br'
+        };
+        return symbols[currency] || currency;
+    };
+
     return (
         <div style={{
             border: "1px solid #ccc",
@@ -30,7 +51,28 @@ const ProductCard = ({
                 </div>
                 <div style={{ display: "flex", flexDirection: "row", gap: "5px" }}>
                     <p>Price:</p>
-                    <p><strong>{product.price}</strong></p>
+                    <div
+                        className="product-price"
+                        style={{display: "flex", flexDirection: "row", gap: "15px", alignItems: "center", fontWeight:"bold"}}
+                    >
+                        <div className="price-byn">
+                            {product.price} {getCurrencySymbol('BYN')}
+                        </div>
+
+                        {currencyRates.length > 0 && (
+                            <div
+                                className="converted-prices"
+                                style={{display: "flex", flexDirection: "row", gap: "15px"}}
+                            >
+                                {currencyRates.map(rate => (
+                                    <div key={rate.currency_iso} className="converted-price">
+                                        {convertPrice(product.price, rate.currency_iso)}
+                                        {getCurrencySymbol(rate.currency_iso)}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
                 </div>
                 <div style={{ display: "flex", flexDirection: "row", gap: "5px" }}>
                     <p>Maker:</p>

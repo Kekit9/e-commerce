@@ -3,9 +3,8 @@
 namespace App\Services;
 
 use App\Interfaces\UserRepositoryInterface;
-use App\Models\User;
 
-class RegistrationService
+class AuthorizationService
 {
     protected UserRepositoryInterface $userRepository;
 
@@ -14,15 +13,8 @@ class RegistrationService
         $this->userRepository = $userRepository;
     }
 
-    /**
-     * Handle user registration.
-     *
-     * @param array $data
-     *
-     * @return User
-     */
-    public function registerUser(array $data): User
+    public function attemptLogin(array $credentials): bool
     {
-        return $this->userRepository->create($data);
+        return $this->userRepository->attemptLogin($credentials);
     }
 }

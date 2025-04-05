@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CurrencyRateController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -17,3 +18,13 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+/**
+ * Currency Rates API Routes
+ */
+// Get current rates
+Route::get('/currency-rates', [CurrencyRateController::class, 'getRates']);
+
+
+// Manual update trigger
+Route::post('/currency-rates/update', [CurrencyRateController::class, 'updateRates']);
