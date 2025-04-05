@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call(CurrencyRatesSeeder::class);
         $makers = Maker::factory(50)->create();
 
         $products = Product::factory(150)->create([

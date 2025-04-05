@@ -10,9 +10,11 @@ interface ProductRepositoryInterface
     /**
      * Get all products with relationships
      *
+     * @return array Returns array of products with makers and services
      * @return LengthAwarePaginator the raw pagination object
      */
     public function getAllProducts(): LengthAwarePaginator;
+    public function getAllProducts(): array;
 
     /**
      * Create a new product

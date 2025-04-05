@@ -3,33 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AuthorizationRequest;
+use App\Services\AuthorizationService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
 
 class AuthorizationController extends Controller
-{ //todo repository
+{
+    protected AuthorizationService $authorizationService;
+
+    public function __construct(AuthorizationService $authorizationService)
+    {
+        $this->authorizationService = $authorizationService;
+    }
+
     public function authorization(AuthorizationRequest $request): JsonResponse
     {
-        $credentials = $request->validated();
+        $success = $this->authorizationService->attemptLogin($request->validated());
 
-        if (!Auth::attempt($credentials)) {
-            return response()->json([
-                'message' => 'Invalid credentials'
-            ], 401);
-        }
-
-        $user = Auth::user();
-        $token = $user->createToken('auth-token')->plainTextToken;
-
-        return response()->json([
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'role' => $user->role,
-            ],
-            'token' => $token,
-            'redirect' => route('main')
-        ]);
+        return $success
+            ? response()->json(['redirect' => route('main')])
+            : response()->json(['message' => 'Invalid credentials'], 401);
     }
 }

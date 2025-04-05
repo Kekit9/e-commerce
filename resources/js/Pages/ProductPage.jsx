@@ -19,6 +19,7 @@ const ProductPage = () => {
         message: ''
     });
     const [productData, setProductData] = useState([]);
+    const [currencyRates, setCurrencyRates] = useState([]);
     const [pagination, setPagination] = useState({
         current_page: 1,
         last_page: 1,
@@ -65,6 +66,14 @@ const ProductPage = () => {
                 alert("Failed to fetch products");
             }
             const productsData = await response.json();
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const response = await fetch("/products-list");
+                if (!response.ok) {
+                    alert("Failed to fetch products");
+                }
+                const { products: productsData, currency_rates } = await response.json();
 
             setProductData(productsData.data);
             setPagination({
@@ -74,6 +83,14 @@ const ProductPage = () => {
                 per_page: productsData.per_page
             });
 
+                setCurrencyRates(currency_rates || []);
+
+                const uniqueMakers = Array.isArray(productsData)
+                    ? [...new Map(productsData
+                        .filter(p => p.maker)
+                        .map(p => [p.maker.id, p.maker]))
+                        .values()]
+                    : [];
             const uniqueMakers = productsData.data && productsData.data.length
                 ? [...new Map(productsData.data
                     .filter(p => p.maker)
@@ -317,6 +334,7 @@ const ProductPage = () => {
                         <ProductCard
                             key={`product-${product.id}`}
                             product={product}
+                            currencyRates={currencyRates}
                             onEdit={setEditingProduct}
                             onDelete={() => handleDeleteClick(product.id)}
                             onUpdate={handleUpdateProduct}

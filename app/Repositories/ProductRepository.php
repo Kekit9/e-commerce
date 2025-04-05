@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Interfaces\CurrencyRateRepositoryInterface;
 use App\Interfaces\ProductRepositoryInterface;
 use App\Models\Product;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -31,9 +32,15 @@ class ProductRepository implements ProductRepositoryInterface
      * @param string $sortDirection
      * @param int $perPage
      * @return LengthAwarePaginator
+     * @return array Returns array of products with makers and services
      */
+    public function getAllProducts(): array
     public function getAllProducts(array $filters = [], string $sortBy = 'id', string $sortDirection = 'asc', int $perPage = 10): LengthAwarePaginator
     {
+        return [
+            'products' => $this->model->with('maker', 'services')->get(),
+            'currency_rates' => app(CurrencyRateRepositoryInterface::class)->getAllRates()
+        ];
         $query = $this->model->with('maker', 'services');
 
         if (!empty($filters['maker_id'])) {
