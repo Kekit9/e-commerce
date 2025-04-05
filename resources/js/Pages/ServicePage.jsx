@@ -5,6 +5,12 @@ import CreateServiceForm from "../Components/CreateServiceForm";
 import DeletionConfirmation from "../Components/DeletionConfirmation.jsx";
 
 const ServicePage = () => {
+    const [isAdmin, setIsAdmin] = useState(false);
+
+    useEffect(() => {
+        const role = localStorage.getItem('userRole');
+        setIsAdmin(role === 'admin');
+    }, []);
     const [confirmDialog, setConfirmDialog] = useState({
         isOpen: false,
         serviceId: null,
@@ -283,13 +289,14 @@ const ServicePage = () => {
                 </select>
             </div>
 
-
-            <CreateServiceForm
-                newService={newService}
-                setNewService={setNewService}
-                onCreate={handleCreateService}
-                csrfToken={csrfToken}
-            />
+            {isAdmin && (
+                <CreateServiceForm
+                    newService={newService}
+                    setNewService={setNewService}
+                    onCreate={handleCreateService}
+                    csrfToken={csrfToken}
+                />
+            )}
 
             <div style={{
                 display: "flex",

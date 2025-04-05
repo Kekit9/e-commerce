@@ -65,12 +65,16 @@ const LoginSignupPage = () => {
                     method: "POST",
                     headers: {
                         'Content-Type': 'application/json',
+                        'Accept': 'application/json',
                         "X-CSRF-TOKEN": csrfToken,
                     },
+                    credentials: 'include',
                     body: JSON.stringify(loginData),
                 })
 
                 const data = await response.json();
+                localStorage.setItem('userRole', data.user.role);
+                localStorage.setItem('authToken', data.token);
 
                 if (response.ok) {
                     if (data.redirect) {

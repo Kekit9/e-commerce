@@ -3,8 +3,15 @@ import { getCsrfToken } from "../CSRF/csrfToken.jsx";
 import ProductCard from "../Components/ProductCard";
 import CreateProductForm from "../Components/CreateProductForm";
 import DeletionConfirmation from "../Components/DeletionConfirmation.jsx";
+import ExportButton from "../Components/ExportButton.jsx";
 
 const ProductPage = () => {
+    const [isAdmin, setIsAdmin] = useState(false);
+
+    useEffect(() => {
+        const role = localStorage.getItem('userRole');
+        setIsAdmin(role === 'admin');
+    }, []);
     const [confirmDialog, setConfirmDialog] = useState({
         isOpen: false,
         productId: null,
@@ -245,6 +252,10 @@ const ProductPage = () => {
         <div style={{ padding: "20px" }}>
             <h1>Products List</h1>
 
+            {isAdmin && (
+                <ExportButton/>
+            )}
+
             <div style={{ marginBottom: '20px' }}>
                 <select
                     name="maker_id"
@@ -283,13 +294,15 @@ const ProductPage = () => {
                 </select>
             </div>
 
-            <CreateProductForm
-                newProduct={newProduct}
-                setNewProduct={setNewProduct}
-                onCreate={handleCreateProduct}
-                csrfToken={csrfToken}
-                makers={makers}
-            />
+            {isAdmin && (
+                <CreateProductForm
+                    newProduct={newProduct}
+                    setNewProduct={setNewProduct}
+                    onCreate={handleCreateProduct}
+                    csrfToken={csrfToken}
+                    makers={makers}
+                />
+            )}
 
             <div style={{
                 display: "flex",

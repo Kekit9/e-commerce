@@ -1,4 +1,5 @@
 import EditServiceForm from './EditServiceForm';
+import {useEffect, useState} from "react";
 
 const ServiceCard = ({
                          service,
@@ -8,6 +9,12 @@ const ServiceCard = ({
                          isEditing,
                          csrfToken
                      }) => {
+    const [isAdmin, setIsAdmin] = useState(false);
+
+    useEffect(() => {
+        const role = localStorage.getItem('userRole');
+        setIsAdmin(role === 'admin');
+    }, []);
     return (
         <div
             style={{
@@ -37,22 +44,24 @@ const ServiceCard = ({
                 <strong><p>{service.price}</p></strong>
             </div>
 
-            <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px", marginTop: "10px" }}>
-                <button
-                    key={`edit-btn-${service.id}`}
-                    onClick={() => onEdit(service)}
-                    style={{ backgroundColor: "orange", color: "white", padding: "5px 10px", border: "none", borderRadius: "4px" }}
-                >
-                    Edit
-                </button>
-                <button
-                    key={`delete-btn-${service.id}`}
-                    onClick={() => onDelete(service.id)}
-                    style={{ backgroundColor: "red", color: "white", padding: "5px 10px", border: "none", borderRadius: "4px" }}
-                >
-                    Delete
-                </button>
-            </div>
+            {isAdmin && (
+                <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px", marginTop: "10px" }}>
+                    <button
+                        key={`edit-btn-${service.id}`}
+                        onClick={() => onEdit(service)}
+                        style={{ backgroundColor: "orange", color: "white", padding: "5px 10px", border: "none", borderRadius: "4px" }}
+                    >
+                        Edit
+                    </button>
+                    <button
+                        key={`delete-btn-${service.id}`}
+                        onClick={() => onDelete(service.id)}
+                        style={{ backgroundColor: "red", color: "white", padding: "5px 10px", border: "none", borderRadius: "4px" }}
+                    >
+                        Delete
+                    </button>
+                </div>
+            )}
 
             {isEditing && (
                 <EditServiceForm

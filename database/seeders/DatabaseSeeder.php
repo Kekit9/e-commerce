@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Maker;
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use App\Models\Service;
 
@@ -27,5 +28,12 @@ class DatabaseSeeder extends Seeder
                 $services->random(rand(1, 3))->pluck('id')->toArray()
             );
         });
+
+        User::query()->create([
+            'name' => 'Super Admin',
+            'email' => 'admin@example.com',
+            'password' => bcrypt('12345678'),
+            'role' => 'admin',
+        ]);
     }
 }
