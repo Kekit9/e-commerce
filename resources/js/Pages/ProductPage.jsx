@@ -63,36 +63,25 @@ const ProductPage = () => {
 
             const response = await fetch(`/products-list?${queryParams}`);
             if (!response.ok) {
-                alert("Failed to fetch products");
+                alert(`HTTP error! status: ${response.status}`);
             }
-            const productsData = await response.json();
-    useEffect(() => {
-        const fetchProducts = async () => {
-            try {
-                const response = await fetch("/products-list");
-                if (!response.ok) {
-                    alert("Failed to fetch products");
-                }
-                const { products: productsData, currency_rates } = await response.json();
+            const data = await response.json();
 
-            setProductData(productsData.data);
+            const products = data.products?.data || [];
+            const paginationData = data.products || {};
+            const currency_rates = data.currency_rates || [];
+
+            setProductData(products);
+            setCurrencyRates(currency_rates);
             setPagination({
-                current_page: productsData.current_page,
-                last_page: productsData.last_page,
-                total: productsData.total,
-                per_page: productsData.per_page
+                current_page: paginationData.current_page || 1,
+                last_page: paginationData.last_page || 1,
+                total: paginationData.total || 0,
+                per_page: paginationData.per_page || 10
             });
 
-                setCurrencyRates(currency_rates || []);
-
-                const uniqueMakers = Array.isArray(productsData)
-                    ? [...new Map(productsData
-                        .filter(p => p.maker)
-                        .map(p => [p.maker.id, p.maker]))
-                        .values()]
-                    : [];
-            const uniqueMakers = productsData.data && productsData.data.length
-                ? [...new Map(productsData.data
+            const uniqueMakers = products.length
+                ? [...new Map(products
                     .filter(p => p.maker)
                     .map(p => [p.maker.id, p.maker]))
                     .values()]
@@ -102,6 +91,7 @@ const ProductPage = () => {
 
         } catch (err) {
             setError(err.message);
+            console.error("Fetch error:", err);
         } finally {
             setLoading(false);
         }

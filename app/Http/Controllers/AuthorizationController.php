@@ -17,10 +17,12 @@ class AuthorizationController extends Controller
 
     public function authorization(AuthorizationRequest $request): JsonResponse
     {
-        $success = $this->authorizationService->attemptLogin($request->validated());
 
-        return $success
-            ? response()->json(['redirect' => route('main')])
-            : response()->json(['message' => 'Invalid credentials'], 401);
+        $result = $this->authorizationService->attemptLogin($request->validated());
+
+        return response()->json([
+            ...$result,
+            'redirect' => route('main')
+        ]);
     }
 }

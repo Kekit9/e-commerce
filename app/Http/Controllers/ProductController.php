@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Services\ProductService;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -72,7 +73,7 @@ class ProductController extends Controller
      * @param UpdateProductRequest $request The validated request
      * @param int $id Product ID
      * @return JsonResponse Returns updated product
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws ModelNotFoundException
      */
     public function update(UpdateProductRequest $request, int $id): JsonResponse
     {
@@ -84,7 +85,7 @@ class ProductController extends Controller
      *
      * @param int $id Product ID
      * @return JsonResponse Returns success message
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws ModelNotFoundException
      */
     public function delete(int $id): JsonResponse
     {

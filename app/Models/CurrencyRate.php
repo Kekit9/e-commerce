@@ -6,6 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class CurrencyRate extends Model
 {
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'currency_rates';
+    /**
+     * The attributes that are mass assignable
+     *
+     * @var array<string>
+     */
     protected $fillable = [
         'currency_iso',
         'currency_code',
@@ -14,6 +25,11 @@ class CurrencyRate extends Model
         'last_updated'
     ];
 
+    /**
+     * The attributes that should be cast
+     *
+     * @var array<string, string>
+     */
     protected $casts = [
         'buy_rate' => 'decimal:6',
         'sale_rate' => 'decimal:6',

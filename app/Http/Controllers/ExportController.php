@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Aws\Exception\AwsException;
-use Aws\Ses\SesClient;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -17,6 +15,9 @@ use League\Csv\Writer;
 class ExportController extends Controller
 {
     /**
+     *
+     * Export catalog in AWS S3 storage in CSV format
+     *
      * @throws CannotInsertRecord
      * @throws Exception
      */

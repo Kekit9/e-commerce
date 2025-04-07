@@ -3,8 +3,8 @@
 namespace App\Services;
 
 use App\Interfaces\ProductRepositoryInterface;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class ProductService
 {
@@ -30,9 +30,9 @@ class ProductService
      * @param string $sortBy
      * @param string $sortDirection
      * @param int $perPage
-     * @return LengthAwarePaginator
+     * @return array
      */
-    public function getAllProducts(array $filters = [], string $sortBy = 'id', string $sortDirection = 'asc', int $perPage = 10): LengthAwarePaginator
+    public function getAllProducts(array $filters = [], string $sortBy = 'id', string $sortDirection = 'asc', int $perPage = 10): array
     {
         return $this->productRepository->getAllProducts(
             $filters,
@@ -60,7 +60,7 @@ class ProductService
      * @param array<string, mixed> $data Product data
      * @param int $id Product ID
      * @return JsonResponse Returns JSON response with updated product
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws ModelNotFoundException
      */
     public function updateProduct(array $data, int $id): JsonResponse
     {
@@ -73,7 +73,7 @@ class ProductService
      *
      * @param int $id Product ID
      * @return JsonResponse Returns JSON response with success message
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws ModelNotFoundException
      */
     public function deleteProduct(int $id): JsonResponse
     {

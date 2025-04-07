@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateServiceRequest;
 use App\Http\Requests\UpdateServiceRequest;
 use App\Services\ServiceService;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -70,7 +71,7 @@ class ServiceController extends Controller
      * @param UpdateServiceRequest $request The validated update request
      * @param int $id The ID of the service to update
      * @return JsonResponse Returns the updated service resource
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws ModelNotFoundException
      */
     public function update(UpdateServiceRequest $request, int $id): JsonResponse
     {
@@ -83,7 +84,7 @@ class ServiceController extends Controller
      * @urlParam id int required The ID of the service to delete. Example: 1
      * @param int $id The ID of the service to delete
      * @return JsonResponse Returns success message
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws ModelNotFoundException
      */
     public function delete(int $id): JsonResponse
     {

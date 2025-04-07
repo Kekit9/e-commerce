@@ -4,6 +4,7 @@ namespace App\Interfaces;
 
 use App\Models\Service;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 interface ServiceRepositoryInterface
 {
@@ -28,7 +29,7 @@ interface ServiceRepositoryInterface
      * @param array<string, mixed> $data Data to update
      * @param int $id ID of the service to update
      * @return Service Returns the updated service instance
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws ModelNotFoundException
      */
     public function updateService(array $data, int $id): Service;
 
@@ -37,7 +38,7 @@ interface ServiceRepositoryInterface
      *
      * @param int $id ID of the service to delete
      * @return bool Returns true if deletion was successful
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws ModelNotFoundException
      */
     public function deleteService(int $id): bool;
 
@@ -46,7 +47,7 @@ interface ServiceRepositoryInterface
      *
      * @param int $id ID of the service to find
      * @return Service Returns the found service instance
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws ModelNotFoundException
      */
     public function findService(int $id): Service;
 }

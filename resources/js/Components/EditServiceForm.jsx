@@ -54,6 +54,7 @@ const EditServiceForm = ({
                 <input
                     type="number"
                     name="duration"
+                    max={12}
                     value={editedService.duration}
                     onChange={handleChange}
                 />

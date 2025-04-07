@@ -3,17 +3,15 @@
 namespace App\Interfaces;
 
 use App\Models\Product;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 interface ProductRepositoryInterface
 {
     /**
      * Get all products with relationships
      *
-     * @return array Returns array of products with makers and services
-     * @return LengthAwarePaginator the raw pagination object
+     * @return array Returns collection of products with makers and services
      */
-    public function getAllProducts(): LengthAwarePaginator;
     public function getAllProducts(): array;
 
     /**
@@ -30,7 +28,7 @@ interface ProductRepositoryInterface
      * @param array<string, mixed> $data Product data
      * @param int $id Product ID
      * @return Product The updated product with maker relationship
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws ModelNotFoundException
      */
     public function updateProduct(array $data, int $id): Product;
 
@@ -39,7 +37,7 @@ interface ProductRepositoryInterface
      *
      * @param int $id Product ID
      * @return bool True if deletion was successful
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws ModelNotFoundException
      */
     public function deleteProduct(int $id): bool;
 
@@ -48,7 +46,7 @@ interface ProductRepositoryInterface
      *
      * @param int $id Product ID
      * @return Product The found product
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws ModelNotFoundException
      */
     public function findProduct(int $id): Product;
 }

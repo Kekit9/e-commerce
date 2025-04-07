@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Interfaces\ServiceRepositoryInterface;
 use App\Http\Resources\ServiceResource;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 
 class ServiceService
@@ -51,7 +52,7 @@ class ServiceService
      */
     public function createService(array $data): JsonResponse
     {
-        $service = $this->serviceRepository->create($data);
+        $service = $this->serviceRepository->createService($data);
         return response()->json(new ServiceResource($service), 201);
     }
 
@@ -61,11 +62,11 @@ class ServiceService
      * @param array<string, mixed> $data The service data to update
      * @param int $id The ID of the service to update
      * @return JsonResponse Returns JSON response with the updated service resource
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws ModelNotFoundException
      */
     public function updateService(array $data, int $id): JsonResponse
     {
-        $service = $this->serviceRepository->update($data, $id);
+        $service = $this->serviceRepository->updateService($data, $id);
         return response()->json(new ServiceResource($service), 200);
     }
 
@@ -74,11 +75,11 @@ class ServiceService
      *
      * @param int $id The ID of the service to delete
      * @return JsonResponse Returns JSON response with success message
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws ModelNotFoundException
      */
     public function deleteService(int $id): JsonResponse
     {
-        $this->serviceRepository->delete($id);
+        $this->serviceRepository->deleteService($id);
         return response()->json(['message' => 'Service deleted successfully'], 204);
     }
 }

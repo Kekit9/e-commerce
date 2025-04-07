@@ -3,10 +3,16 @@
 namespace App\Services;
 
 use App\Interfaces\CurrencyRateRepositoryInterface;
+use Exception;
 use Illuminate\Database\Eloquent\Collection;
 
 class CurrencyRateService
 {
+    /**
+     * Currency rate repository instance
+     *
+     * @var CurrencyRateRepositoryInterface
+     */
     protected CurrencyRateRepositoryInterface $currencyRateRepository;
 
     /**
@@ -18,7 +24,7 @@ class CurrencyRateService
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      *
      * Update currency rates
      *

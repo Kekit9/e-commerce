@@ -41,7 +41,7 @@ const ServiceCard = ({
             </div>
             <div style={{ display: "flex", flexDirection: "row", gap: "5px", alignContent: "center" }}>
                 <p>Price:</p>
-                <strong><p>{service.price}</p></strong>
+                <strong><p>{service.price} Br</p></strong>
             </div>
 
             {isAdmin && (

@@ -8,7 +8,7 @@ const MyComponent = () => {
             display: 'flex',
             flexDirection: 'column',
             gap: '30px',
-            marginTop: '30px',
+            marginTop: '25%',
             alignItems: 'center',
         }}>Which list of instance do you want to look?
             <div style={{

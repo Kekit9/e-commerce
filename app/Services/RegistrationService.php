@@ -7,6 +7,11 @@ use App\Models\User;
 
 class RegistrationService
 {
+    /**
+     * User repository instance
+     *
+     * @var UserRepositoryInterface
+     */
     protected UserRepositoryInterface $userRepository;
 
     public function __construct(UserRepositoryInterface $userRepository)

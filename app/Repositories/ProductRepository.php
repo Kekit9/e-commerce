@@ -5,7 +5,7 @@ namespace App\Repositories;
 use App\Interfaces\CurrencyRateRepositoryInterface;
 use App\Interfaces\ProductRepositoryInterface;
 use App\Models\Product;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ProductRepository implements ProductRepositoryInterface
 {
@@ -31,16 +31,11 @@ class ProductRepository implements ProductRepositoryInterface
      * @param string $sortBy
      * @param string $sortDirection
      * @param int $perPage
-     * @return LengthAwarePaginator
+     * @return array
      * @return array Returns array of products with makers and services
      */
-    public function getAllProducts(): array
-    public function getAllProducts(array $filters = [], string $sortBy = 'id', string $sortDirection = 'asc', int $perPage = 10): LengthAwarePaginator
+    public function getAllProducts(array $filters = [], string $sortBy = 'id', string $sortDirection = 'asc', int $perPage = 10): array
     {
-        return [
-            'products' => $this->model->with('maker', 'services')->get(),
-            'currency_rates' => app(CurrencyRateRepositoryInterface::class)->getAllRates()
-        ];
         $query = $this->model->with('maker', 'services');
 
         if (!empty($filters['maker_id'])) {
@@ -55,7 +50,10 @@ class ProductRepository implements ProductRepositoryInterface
 
         $query->orderBy($sortBy, $sortDirection);
 
-        return $query->paginate($perPage);
+        return [
+            'products' => $query->paginate($perPage),
+            'currency_rates' => app(CurrencyRateRepositoryInterface::class)->getAllRates()
+        ];
     }
 
     /**
@@ -75,7 +73,7 @@ class ProductRepository implements ProductRepositoryInterface
      * @param array<string, mixed> $data Product data
      * @param int $id Product ID
      * @return Product The updated product with maker relationship
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws ModelNotFoundException
      */
     public function updateProduct(array $data, int $id): Product
     {
@@ -89,7 +87,7 @@ class ProductRepository implements ProductRepositoryInterface
      *
      * @param int $id Product ID
      * @return bool True if deletion was successful
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws ModelNotFoundException
      */
     public function deleteProduct(int $id): bool
     {
@@ -103,7 +101,7 @@ class ProductRepository implements ProductRepositoryInterface
      *
      * @param int $id Product ID
      * @return Product The found product
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws ModelNotFoundException
      */
     public function findProduct(int $id): Product
     {

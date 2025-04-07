@@ -3,15 +3,28 @@
 namespace App\Interfaces;
 
 use App\Models\User;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\QueryException;
 
 interface UserRepositoryInterface
 {
+    /**
+     * Create a new user record
+     *
+     * @param array $data User data including name, email, password etc.
+     * @return User Newly created User model instance
+     * @throws QueryException If creation fails
+     */
     public function create(array $data): User;
-    public function find(int $id): ?User;
-    public function findByEmail(string $email): ?User;
-    public function update(int $id, array $data): bool;
-    public function delete(int $id): bool;
-    public function getAll(): Collection;
-    public function attemptLogin(array $credentials): bool;
+
+    /**
+     * Attempt to authenticate a user
+     *
+     * @param array $credentials Authentication credentials (email, password)
+     * @return array Contains:
+     *               - 'user' => User data array
+     *               - 'token' => API access token
+     * @throws AuthenticationException If authentication fails
+     */
+    public function attemptLogin(array $credentials): array;
 }

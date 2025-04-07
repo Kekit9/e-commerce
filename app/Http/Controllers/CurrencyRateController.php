@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\CurrencyRateService;
+use Exception;
 use Illuminate\Http\JsonResponse;
 
 class CurrencyRateController extends Controller
@@ -27,7 +28,7 @@ class CurrencyRateController extends Controller
      *      "success": false,
      *      "message": "Error message"
      *
-     * @throws \Exception
+     * @throws Exception
      *
      *  Update currency rates manually
      *

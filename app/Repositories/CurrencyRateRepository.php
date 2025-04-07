@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Interfaces\CurrencyRateRepositoryInterface;
 use App\Models\CurrencyRate;
+use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Http;
 use SimpleXMLElement;
@@ -12,7 +13,7 @@ use Carbon\Carbon;
 class CurrencyRateRepository implements CurrencyRateRepositoryInterface
 {
     /**
-     * @throws \Exception
+     * @throws Exception
      *
      * Currency rates repository implementation
      */
@@ -47,7 +48,7 @@ class CurrencyRateRepository implements CurrencyRateRepositoryInterface
             $this->updateOrCreateRates($ratesToStore);
             return ['success' => true, 'message' => 'Rates updated'];
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
         }
     }
