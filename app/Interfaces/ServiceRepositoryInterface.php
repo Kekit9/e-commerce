@@ -41,4 +41,5 @@ interface ServiceRepositoryInterface
      * @throws ModelNotFoundException
      */
     public function deleteService(int $id): bool;
+
 }
