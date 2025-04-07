@@ -95,16 +95,4 @@ class ProductRepository implements ProductRepositoryInterface
         $product->delete();
         return true;
     }
-
-    /**
-     * Find a product by ID
-     *
-     * @param int $id Product ID
-     * @return Product The found product
-     * @throws ModelNotFoundException
-     */
-    public function findProduct(int $id): Product
-    {
-        return $this->model->findOrFail($id);
-    }
 }

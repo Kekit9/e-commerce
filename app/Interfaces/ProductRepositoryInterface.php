@@ -40,13 +40,4 @@ interface ProductRepositoryInterface
      * @throws ModelNotFoundException
      */
     public function deleteProduct(int $id): bool;
-
-    /**
-     * Find a product by ID
-     *
-     * @param int $id Product ID
-     * @return Product The found product
-     * @throws ModelNotFoundException
-     */
-    public function findProduct(int $id): Product;
 }
