@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
+        "ext-libxml": "*",
         "ext-simplexml": "*",
         "aws/aws-sdk-php": "^3.342",
         "guzzlehttp/guzzle": "^7.2",
@@ -15,7 +16,7 @@
         "laravel/tinker": "^2.8",
         "league/csv": "^9.23",
         "league/flysystem-aws-s3-v3": "^3.0",
-        "ext-libxml": "*"
+        "php-amqplib/php-amqplib": "^3.7"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

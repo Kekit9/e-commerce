@@ -85,16 +85,4 @@ class ServiceRepository implements ServiceRepositoryInterface
         $service->delete();
         return true;
     }
-
-    /**
-     * Find a specific service by ID
-     *
-     * @param int $id ID of the service to find
-     * @return Service Returns the found service instance
-     * @throws ModelNotFoundException
-     */
-    public function findService(int $id): Service
-    {
-        return $this->model->findOrFail($id);
-    }
 }

@@ -42,12 +42,4 @@ interface ServiceRepositoryInterface
      */
     public function deleteService(int $id): bool;
 
-    /**
-     * Find a specific service by ID
-     *
-     * @param int $id ID of the service to find
-     * @return Service Returns the found service instance
-     * @throws ModelNotFoundException
-     */
-    public function findService(int $id): Service;
 }
