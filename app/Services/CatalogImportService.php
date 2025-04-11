@@ -9,10 +9,32 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 
+/**
+ * Service class for handling catalog export processing from RabbitMQ to S3
+ *
+ * This service listens to a RabbitMQ queue for catalog export messages,
+ * saves the received CSV data to S3 storage, and notifies administrators
+ * via email with a temporary download link.
+ */
 class CatalogImportService
 {
     /**
-     * @throws Exception
+     * Processes catalog exports from RabbitMQ queue
+     *
+     * Listens to the 'catalog_export' queue for incoming messages containing
+     * catalog data in CSV format. Each received message is:
+     * 1. Saved to S3 storage with a timestamped filename
+     * 2. Triggers an email notification to administrators with a temporary download link
+     * 3. Acknowledges successful processing or negatively acknowledges on failure
+     *
+     * @return void
+     *
+     * @throws Exception If there's an error establishing the RabbitMQ connection
+     *
+     * @uses AMQPStreamConnection For RabbitMQ connectivity
+     * @uses Storage For persisting the CSV to S3
+     * @uses Mail For sending email notifications via SES
+     * @uses Log For error logging
      */
     public function processExports(): void
     {
@@ -42,7 +64,7 @@ class CatalogImportService
 
                 $msg->ack();
             } catch (Exception $e) {
-                Log::error('Catalog processing failed: ' . $e->getMessage());
+                Log::error(__('catalog.processing_failed') . $e->getMessage());
                 $msg->nack();
             }
         };

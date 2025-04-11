@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateServiceRequest;
 use App\Http\Requests\UpdateServiceRequest;
+use App\Models\Service;
 use App\Services\ServiceService;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -36,20 +38,17 @@ class ServiceController extends Controller
     /**
      * Get all services
      *
+     * @param Request $request
+     *
      * @return JsonResponse filtered butch of items
+     *
+     * @throws AuthorizationException
      */
     public function index(Request $request): JsonResponse
     {
-        $filters = [
-            'service_type' => $request->query('service_type'),
-        ];
+        $this->authorize('viewAny', Service::class);
 
-        $services = $this->serviceService->getAllServices(
-            $filters,
-            $request->query('sort_by', 'id'),
-            $request->query('sort_direction', 'asc'),
-            $request->query('per_page', 10)
-        );
+        $services = $this->serviceService->getAllServices($request);
 
         return response()->json($services);
     }
@@ -58,9 +57,10 @@ class ServiceController extends Controller
      * Create a new service
      *
      * @param CreateServiceRequest $request The validated create request
+     *
      * @return JsonResponse Returns the newly created service resource
      */
-    public function create(CreateServiceRequest $request): JsonResponse
+    public function store(CreateServiceRequest $request): JsonResponse
     {
         return $this->serviceService->createService($request->validated());
     }
@@ -70,7 +70,9 @@ class ServiceController extends Controller
      *
      * @param UpdateServiceRequest $request The validated update request
      * @param int $id The ID of the service to update
+     *
      * @return JsonResponse Returns the updated service resource
+     *
      * @throws ModelNotFoundException
      */
     public function update(UpdateServiceRequest $request, int $id): JsonResponse
@@ -82,11 +84,14 @@ class ServiceController extends Controller
      * Delete a service
      *
      * @urlParam id int required The ID of the service to delete. Example: 1
+     *
      * @param int $id The ID of the service to delete
+     *
      * @return JsonResponse Returns success message
+     *
      * @throws ModelNotFoundException
      */
-    public function delete(int $id): JsonResponse
+    public function destroy(int $id): JsonResponse
     {
         return $this->serviceService->deleteService($id);
     }

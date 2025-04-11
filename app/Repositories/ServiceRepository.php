@@ -4,11 +4,17 @@ namespace App\Repositories;
 
 use App\Interfaces\ServiceRepositoryInterface;
 use App\Models\Service;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
 
 class ServiceRepository implements ServiceRepositoryInterface
 {
+    const DEFAULT_PER_PAGE = 10;
+
+    const DEFAULT_SORT_VALUE = 'id';
+
+    const DEFAULT_SORT_DIRECTION = 'asc';
+
     /**
      * @var Service The service model instance
      */
@@ -27,29 +33,35 @@ class ServiceRepository implements ServiceRepositoryInterface
     /**
      * Get all services
      *
-     * @param array $filters
-     * @param string $sortBy
-     * @param string $sortDirection
-     * @param int $perPage
-     * @return LengthAwarePaginator Returns a collection of all services
+     * @param Request $request
+     *
+     * @return array Returns a collection of all services
      */
-    public function getAllServices(array $filters = [], string $sortBy = 'id', string $sortDirection = 'asc', int $perPage = 10): LengthAwarePaginator
+    public function getAllServices(Request $request): array
     {
+        $sortBy = $request->query('sort_by', self::DEFAULT_SORT_VALUE);
+        $sortDirection = $request->query('sort_direction', self::DEFAULT_SORT_DIRECTION);
+        $perPage = $request->query('per_page', self::DEFAULT_PER_PAGE);
+        $serviceType = $request->query('service_type');
+
         $query = $this->model->query();
 
-        if (!empty($filters['service_type'])) {
-            $query->where('service_type', $filters['service_type']);
+        if ($serviceType !== null) {
+            $query->where('service_type', $serviceType);
         }
 
         $query->orderBy($sortBy, $sortDirection);
 
-        return $query->paginate($perPage);
+        return [
+            'services' => $query->paginate($perPage),
+        ];
     }
 
     /**
      * Create a new service record
      *
      * @param array<string, mixed> $data Service data to create
+     *
      * @return Service Returns the newly created service instance
      */
     public function createService(array $data): Service
@@ -62,13 +74,16 @@ class ServiceRepository implements ServiceRepositoryInterface
      *
      * @param array<string, mixed> $data Data to update
      * @param int $id ID of the service to update
+     *
      * @return Service Returns the updated service instance
+     *
      * @throws ModelNotFoundException
      */
     public function updateService(array $data, int $id): Service
     {
         $service = $this->model->findOrFail($id);
         $service->update($data);
+
         return $service->fresh();
     }
 
@@ -76,13 +91,16 @@ class ServiceRepository implements ServiceRepositoryInterface
      * Delete a service record
      *
      * @param int $id ID of the service to delete
+     *
      * @return bool Returns true if deletion was successful
+     *
      * @throws ModelNotFoundException
      */
     public function deleteService(int $id): bool
     {
         $service = $this->model->findOrFail($id);
         $service->delete();
+
         return true;
     }
 }

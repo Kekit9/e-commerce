@@ -28,7 +28,7 @@ class Product extends Model
     ];
 
     /**
-     * Get all of the services for the product through the intermediate table.
+     * Get all the services for the product through the intermediate table.
      */
     public function services(): BelongsToMany
     {

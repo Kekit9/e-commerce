@@ -12,7 +12,9 @@ interface UserRepositoryInterface
      * Create a new user record
      *
      * @param array $data User data including name, email, password etc.
+     *
      * @return User Newly created User model instance
+     *
      * @throws QueryException If creation fails
      */
     public function create(array $data): User;
@@ -21,9 +23,9 @@ interface UserRepositoryInterface
      * Attempt to authenticate a user
      *
      * @param array $credentials Authentication credentials (email, password)
-     * @return array Contains:
-     *               - 'user' => User data array
-     *               - 'token' => API access token
+     *
+     * @return array
+     *
      * @throws AuthenticationException If authentication fails
      */
     public function attemptLogin(array $credentials): array;

@@ -4,10 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Services\CurrencyRateService;
 use Exception;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Database\Eloquent\Collection;
 
 class CurrencyRateController extends Controller
 {
+    /**
+     * The CurrencyRateService service instance
+     *
+     * @var CurrencyRateService
+     */
     private CurrencyRateService $currencyRateService;
 
     /**
@@ -19,48 +24,22 @@ class CurrencyRateController extends Controller
     }
 
     /**
-     * @return JsonResponse
-     *  @response
-     *      "success": true,
-     *      "message": "Rates updated successfully"
+     * Update currency rates manually
      *
-     * @response 500
-     *      "success": false,
-     *      "message": "Error message"
+     * @return array
      *
      * @throws Exception
-     *
-     *  Update currency rates manually
-     *
      */
-    public function updateRates(): JsonResponse
+    public function updateRates(): array
     {
-        $result = $this->currencyRateService->fetchAndUpdateRates();
-        $status = $result['success'] ? 200 : 500;
-
-        return response()->json($result, $status);
+        return $this->currencyRateService->fetchAndUpdateRates();
     }
 
     /**
-     *  Get current currency rates
-     *
-     * @return JsonResponse
-     * @response {
-     *      "success": true,
-     *      "data": [
-     *          {
-     *              "currency_iso": "USD",
-     *              "buy_rate": 3.102,
-     *              "sale_rate": 3.112
-     *          }
-     *      ]
-     *  }
+     * Get all currency rates
      */
-    public function getRates(): JsonResponse
+    public function index(): Collection
     {
-        return response()->json([
-            'success' => true,
-            'data' => $this->currencyRateService->getAllRates()
-        ]);
+        return $this->currencyRateService->getAllRates();
     }
 }

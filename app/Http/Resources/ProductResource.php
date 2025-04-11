@@ -14,6 +14,11 @@ class ProductResource extends JsonResource
     private float $price;
     private string $category;
 
+    /**
+     * Constructs a new instance from a resource object
+     *
+     * @param object $resource
+     */
     public function __construct($resource)
     {
         parent::__construct($resource);
@@ -28,6 +33,8 @@ class ProductResource extends JsonResource
 
     /**
      * Transform the resource into an array.
+     *
+     * @param Request $request
      *
      * @return array<string, mixed>
      */

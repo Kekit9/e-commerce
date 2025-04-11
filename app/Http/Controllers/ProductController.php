@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Models\Product;
 use App\Services\ProductService;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -36,21 +38,17 @@ class ProductController extends Controller
     /**
      * Get all products
      *
+     * @param Request $request
+     *
      * @return JsonResponse filtered butch of items
+     *
+     * @throws AuthorizationException
      */
     public function index(Request $request): JsonResponse
     {
-        $filters = [
-            'maker_id' => $request->query('maker_id'),
-            'service_id' => $request->query('service_id')
-        ];
+        $this->authorize('viewAny', Product::class);
 
-        $products = $this->productService->getAllProducts(
-            $filters,
-            $request->query('sort_by', 'id'),
-            $request->query('sort_direction', 'asc'),
-            $request->query('per_page', 10)
-        );
+        $products = $this->productService->getAllProducts($request);
 
         return response()->json($products);
     }
@@ -59,9 +57,10 @@ class ProductController extends Controller
      * Create a new product
      *
      * @param CreateProductRequest $request The validated request
+     *
      * @return JsonResponse Returns created product
      */
-    public function create(CreateProductRequest $request): JsonResponse
+    public function store(CreateProductRequest $request): JsonResponse
     {
         return $this->productService->createProduct($request->validated());
     }
@@ -69,10 +68,11 @@ class ProductController extends Controller
     /**
      * Update a product
      *
-     *
      * @param UpdateProductRequest $request The validated request
      * @param int $id Product ID
+     *
      * @return JsonResponse Returns updated product
+     *
      * @throws ModelNotFoundException
      */
     public function update(UpdateProductRequest $request, int $id): JsonResponse
@@ -84,10 +84,12 @@ class ProductController extends Controller
      * Delete a product
      *
      * @param int $id Product ID
+     *
      * @return JsonResponse Returns success message
+     *
      * @throws ModelNotFoundException
      */
-    public function delete(int $id): JsonResponse
+    public function destroy(int $id): JsonResponse
     {
         return $this->productService->deleteProduct($id);
     }

@@ -14,6 +14,11 @@ class RegistrationService
      */
     protected UserRepositoryInterface $userRepository;
 
+    /**
+     * Create new service instance
+     *
+     * @param UserRepositoryInterface $userRepository
+     */
     public function __construct(UserRepositoryInterface $userRepository)
     {
         $this->userRepository = $userRepository;

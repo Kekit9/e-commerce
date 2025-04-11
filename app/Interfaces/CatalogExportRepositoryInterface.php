@@ -2,18 +2,14 @@
 
 namespace App\Interfaces;
 
+use Illuminate\Database\Eloquent\Collection;
+
 interface CatalogExportRepositoryInterface
 {
     /**
      * Export product catalog to CSV and send to S3
      *
-     * @return array
-     *     'success' => bool,
-     *     'message' => string,
-     *     'file' => string|null,
-     *     'url' => string|null,
-     *     'error' => string|null
-     *
+     * @return Collection
      */
-    public function exportCatalogToCsv(): array;
+    public function getProductsForExport(): Collection;
 }

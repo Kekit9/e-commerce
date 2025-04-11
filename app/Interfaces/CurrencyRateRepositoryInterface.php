@@ -7,11 +7,13 @@ use Illuminate\Database\Eloquent\Collection;
 interface CurrencyRateRepositoryInterface
 {
     /**
-     * Fetch and update currency rates from external source
+     * Update or insert currency rates
      *
-     * @return array
+     * @param array $rates
+     *
+     * @return void
      */
-    public function fetchAndUpdateRates(): array;
+    public function upsertRates(array $rates): void;
 
     /**
      * Get all currency rates from database

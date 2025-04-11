@@ -32,7 +32,7 @@ class CatalogExported extends Mailable
     public function build()
     {
         return $this->from(config('mail.from.address'))
-            ->subject('Product Catalog Export Completed')
+            ->subject(__('catalog.exported_successfully'))
             ->view('emails.catalog-exported')
             ->with([
                 'filename' => $this->filename,

@@ -5,10 +5,7 @@ use App\Http\Controllers\ExportController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\ServiceController;
-use App\Models\Maker;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,7 +20,6 @@ use Illuminate\Support\Facades\Storage;
 Route::inertia('/login-signup', 'LoginSignupPage');
 
 Route::post('/registration', [RegistrationController::class, 'registration']);
-
 Route::post('/authorization', [AuthorizationController::class, 'authorization']);
 
 Route::inertia('/main', 'MainPage')->name('main');
@@ -31,17 +27,10 @@ Route::inertia('/main', 'MainPage')->name('main');
 Route::inertia('/products', 'ProductPage');
 Route::inertia('/services', 'ServicePage');
 
-Route::get('/services-list', [ServiceController::class, 'index']);
-Route::get('/products-list', [ProductController::class, 'index']);
+Route::prefix('api')->middleware(['auth:sanctum', 'admin'])->group(function () {
+    Route::apiResource('products', ProductController::class);
 
-Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
-    Route::post('/product', [ProductController::class, 'create']);
-    Route::put('/product/{id}', [ProductController::class, 'update']);
-    Route::delete('/product/{id}', [ProductController::class, 'delete']);
-
-    Route::post('/service', [ServiceController::class, 'create']);
-    Route::put('/service/{id}', [ServiceController::class, 'update']);
-    Route::delete('/service/{id}', [ServiceController::class, 'delete']);
+    Route::apiResource('services', ServiceController::class);
 });
 
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {

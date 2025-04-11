@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use App\Models\Service;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -33,7 +34,7 @@ class DatabaseSeeder extends Seeder
         User::query()->create([
             'name' => 'Super Admin',
             'email' => 'admin@example.com',
-            'password' => bcrypt('12345678'),
+            'password' => Hash::make('12345678'),
             'role' => 'admin',
         ]);
     }

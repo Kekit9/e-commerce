@@ -27,13 +27,12 @@ class AuthorizationService
     /**
      * Attempt to authenticate a user
      *
-     * @param array $credentials Authentication credentials including:
-     *                          - 'email' (string) User email address
-     *                          - 'password' (string) User password
-     * @return array Contains:
-     *               - 'user' (array) Authenticated user data
-     *               - 'token' (string) API access token
+     * @param array $credentials
+     *
+     * @return array
+     *
      * @throws AuthenticationException When authentication fails
+     *
      * @see UserRepositoryInterface::attemptLogin()
      */
     public function attemptLogin(array $credentials): array

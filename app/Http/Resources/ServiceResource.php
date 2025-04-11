@@ -13,6 +13,11 @@ class ServiceResource extends JsonResource
     private float $price;
     private string $terms;
 
+    /**
+     * Constructs a new instance from a resource object
+     *
+     * @param object $resource
+     */
     public function __construct($resource)
     {
         parent::__construct($resource);

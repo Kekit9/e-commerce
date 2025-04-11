@@ -13,6 +13,7 @@ class UserRepository implements UserRepositoryInterface
      * Create a new user.
      *
      * @param array $data
+     *
      * @return User
      */
     public function create(array $data): User
@@ -24,13 +25,15 @@ class UserRepository implements UserRepositoryInterface
      * Login user in system.
      *
      * @param array $credentials
+     *
      * @return array
+     *
      * @throws AuthenticationException
      */
     public function attemptLogin(array $credentials): array
     {
         if (!Auth::attempt($credentials)) {
-            throw new AuthenticationException('Invalid credentials');
+            throw new AuthenticationException(__('auth.invalid_cred'));
         }
 
         $user = Auth::user();

@@ -61,7 +61,7 @@ const ProductPage = () => {
                 per_page: pagination.per_page
             }).toString();
 
-            const response = await fetch(`/products-list?${queryParams}`);
+            const response = await fetch(`/api/products?${queryParams}`);
             if (!response.ok) {
                 alert(`HTTP error! status: ${response.status}`);
             }
@@ -131,7 +131,7 @@ const ProductPage = () => {
 
     const handleCreateProduct = async () => {
         try {
-            const response = await fetch("/product", {
+            const response = await fetch("/api/products", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -162,7 +162,7 @@ const ProductPage = () => {
 
     const handleUpdateProduct = async (productId, updatedData) => {
         try {
-            const response = await fetch(`/product/${productId}`, {
+            const response = await fetch(`/api/products/${productId}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -232,7 +232,7 @@ const ProductPage = () => {
 
     const handleDeleteProduct = async (productId) => {
         try {
-            const response = await fetch(`/product/${productId}`, {
+            const response = await fetch(`/api/products/${productId}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
@@ -371,5 +371,5 @@ const ProductPage = () => {
         </div>
     );
 };
-
 export default ProductPage;
+

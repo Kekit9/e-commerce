@@ -12,6 +12,7 @@ class CurrencyRate extends Model
      * @var string
      */
     protected $table = 'currency_rates';
+
     /**
      * The attributes that are mass assignable
      *

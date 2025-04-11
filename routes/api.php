@@ -23,7 +23,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
  * Currency Rates API Routes
  */
 // Get current rates
-Route::get('/currency-rates', [CurrencyRateController::class, 'getRates']);
+Route::get('/currency-rates', [CurrencyRateController::class, 'index']);
 
 
 // Manual update trigger

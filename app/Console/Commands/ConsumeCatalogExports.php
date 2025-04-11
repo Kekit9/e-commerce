@@ -24,6 +24,9 @@ class ConsumeCatalogExports extends Command
 
     /**
      * Execute the console command.
+     *
+     * @param CatalogImportService $importService
+     *
      * @throws Exception
      */
     public function handle(CatalogImportService $importService): void

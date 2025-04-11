@@ -2,9 +2,11 @@
 
 namespace App\Services;
 
+use App\Http\Resources\ProductResource;
 use App\Interfaces\ProductRepositoryInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class ProductService
 {
@@ -26,32 +28,28 @@ class ProductService
     }
 
     /**
-     * @param array $filters
-     * @param string $sortBy
-     * @param string $sortDirection
-     * @param int $perPage
+     * Get all products
+     *
+     * @param Request $request
+     *
      * @return array
      */
-    public function getAllProducts(array $filters = [], string $sortBy = 'id', string $sortDirection = 'asc', int $perPage = 10): array
+    public function getAllProducts(Request $request): array
     {
-        return $this->productRepository->getAllProducts(
-            $filters,
-            $sortBy,
-            $sortDirection,
-            $perPage
-        );
+        return $this->productRepository->getAllProducts($request);
     }
 
     /**
      * Create a new product
      *
      * @param array<string, mixed> $data Product data
+     *
      * @return JsonResponse Returns JSON response with created product
      */
     public function createProduct(array $data): JsonResponse
     {
         $product = $this->productRepository->createProduct($data);
-        return response()->json($product, 201);
+        return response()->json(new ProductResource($product));
     }
 
     /**
@@ -59,25 +57,32 @@ class ProductService
      *
      * @param array<string, mixed> $data Product data
      * @param int $id Product ID
+     *
      * @return JsonResponse Returns JSON response with updated product
+     *
      * @throws ModelNotFoundException
      */
     public function updateProduct(array $data, int $id): JsonResponse
     {
         $product = $this->productRepository->updateProduct($data, $id);
-        return response()->json($product, 200);
+        return response()->json(new ProductResource($product));
     }
 
     /**
      * Delete a product
      *
      * @param int $id Product ID
+     *
      * @return JsonResponse Returns JSON response with success message
+     *
      * @throws ModelNotFoundException
      */
     public function deleteProduct(int $id): JsonResponse
     {
         $this->productRepository->deleteProduct($id);
-        return response()->json(['message' => 'Product deleted successfully'], 204);
+        return response()->json([
+            'message' => __('product.deleted_successfully'),
+            'id' => $id
+        ]);
     }
 }

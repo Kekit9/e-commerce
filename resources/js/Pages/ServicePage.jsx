@@ -57,18 +57,21 @@ const ServicePage = () => {
                 per_page: pagination.per_page
             }).toString();
 
-            const response = await fetch(`/services-list?${queryParams}`);
+            const response = await fetch(`/api/services?${queryParams}`);
             if (!response.ok) {
                 alert("Failed to fetch services");
             }
             const servicesData = await response.json();
 
-            setServiceData(servicesData.data);
+            const services = servicesData.services?.data || [];
+            const paginationData = servicesData.services || {};
+
+            setServiceData(services);
             setPagination({
-                current_page: servicesData.current_page,
-                last_page: servicesData.last_page,
-                total: servicesData.total,
-                per_page: servicesData.per_page
+                current_page: paginationData.current_page,
+                last_page: paginationData.last_page,
+                total: paginationData.total,
+                per_page: paginationData.per_page
             });
 
         } catch (err) {
@@ -112,7 +115,7 @@ const ServicePage = () => {
 
     const handleCreateService = async () => {
         try {
-            const response = await fetch("/service", {
+            const response = await fetch("/api/services", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -143,7 +146,7 @@ const ServicePage = () => {
 
     const handleUpdateService = async (serviceId, updatedData) => {
         try {
-            const response = await fetch(`/service/${serviceId}`, {
+            const response = await fetch(`/api/services/${serviceId}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -213,7 +216,7 @@ const ServicePage = () => {
 
     const handleDeleteService = async (serviceId) => {
         try {
-            const response = await fetch(`/service/${serviceId}`, {
+            const response = await fetch(`/api/services/${serviceId}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
