@@ -75,7 +75,7 @@ class CatalogExportService
         $csv = Writer::createFromString('');
         $csv->insertOne(['ID', 'Name', 'Description', 'Price', 'Maker', 'Services']);
 
-        $products->each(fn($product) => $csv->insertOne([
+        $products->each(fn ($product) => $csv->insertOne([
             $product->id,
             $product->name,
             $product->description,

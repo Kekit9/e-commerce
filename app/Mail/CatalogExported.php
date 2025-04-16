@@ -11,7 +11,8 @@ use Illuminate\Queue\SerializesModels;
  */
 class CatalogExported extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     /**
      * Create a new message instance
@@ -22,7 +23,8 @@ class CatalogExported extends Mailable
     public function __construct(
         public string $filename,
         public string $downloadUrl
-    ) {}
+    ) {
+    }
 
     /**
      * Build the message

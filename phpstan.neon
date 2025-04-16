@@ -1,0 +1,14 @@
+parameters:
+    level: 8
+    paths:
+        - app
+        - config
+        - database
+        - public
+        - resources
+        - routes
+        - storage
+    # Optional exclusions
+    excludePaths:
+        - tests
+        - templates

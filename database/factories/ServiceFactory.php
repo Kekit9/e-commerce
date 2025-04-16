@@ -29,4 +29,3 @@ class ServiceFactory extends Factory
         ];
     }
 }
-

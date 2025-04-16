@@ -29,7 +29,7 @@ class ExportController extends Controller
      */
     public function exportCatalog(): JsonResponse
     {
-        Log::info( __('log.exp_click_successfully'));
+        Log::info(__('log.exp_click_successfully'));
         $result = $this->catalogExportService->exportCatalog();
 
         return response()->json(

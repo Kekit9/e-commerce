@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
         $makers = Maker::factory(50)->create();
 
         $products = Product::factory(150)->create([
-            'maker_id' => fn() => $makers->random()->id
+            'maker_id' => fn () => $makers->random()->id
         ]);
 
         $services = Service::factory(50)->create();

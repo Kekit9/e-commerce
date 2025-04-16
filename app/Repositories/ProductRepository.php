@@ -9,11 +9,11 @@ use Illuminate\Http\Request;
 
 class ProductRepository implements ProductRepositoryInterface
 {
-    const DEFAULT_PER_PAGE = 10;
+    public const DEFAULT_PER_PAGE = 10;
 
-    const DEFAULT_SORT_VALUE = 'id';
+    public const DEFAULT_SORT_VALUE = 'id';
 
-    const DEFAULT_SORT_DIRECTION = 'asc';
+    public const DEFAULT_SORT_DIRECTION = 'asc';
 
     /**
      * @var Product The product model instance

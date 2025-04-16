@@ -11,7 +11,7 @@ use SimpleXMLElement;
 
 class CurrencyRateService
 {
-    const DEFAULT_CURRENCY_URL = 'https://bankdabrabyt.by/export_courses.php';
+    public const DEFAULT_CURRENCY_URL = 'https://bankdabrabyt.by/export_courses.php';
 
     /**
      * Currency rate repository instance
