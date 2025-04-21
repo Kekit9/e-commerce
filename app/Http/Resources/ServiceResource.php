@@ -24,11 +24,11 @@ class ServiceResource extends JsonResource
     {
         parent::__construct($resource);
 
-        $this->id = $resource->id;
-        $this->service_type = $resource->service_type;
-        $this->duration = $resource->duration;
-        $this->price = $resource->price;
-        $this->terms = $resource->terms;
+        $this->id = (int)$resource->id;
+        $this->service_type = (string)$resource->service_type;
+        $this->duration = (int)$resource->duration;
+        $this->price = (float)$resource->price;
+        $this->terms = (string)$resource->terms;
     }
 
     /**

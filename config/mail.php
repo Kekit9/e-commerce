@@ -53,6 +53,9 @@ return [
             'region' => env('AWS_SES_REGION', 'us-east-1'),
             'version' => 'latest',
             'endpoint' => env('AWS_ENDPOINT'),
+            'options' => [
+                'verify' => false,
+            ],
         ],
 
         'postmark' => [

@@ -25,12 +25,12 @@ class ProductResource extends JsonResource
     {
         parent::__construct($resource);
 
-        $this->id = $resource->id;
-        $this->name = $resource->name;
-        $this->description = $resource->description;
-        $this->price = $resource->price;
-        $this->maker_id = $resource->maker_id;
-        $this->category = $resource->category;
+        $this->id = (int)$resource->id;
+        $this->name = (string)$resource->name;
+        $this->description = (string)$resource->description;
+        $this->price = (float)$resource->price;
+        $this->maker_id = (int)$resource->maker_id;
+        $this->category = (string)$resource->category;
     }
 
     /**
