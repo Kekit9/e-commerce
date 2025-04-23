@@ -34,7 +34,7 @@ class ProductService
      *
      * @param Request $request
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function getAllProducts(Request $request): array
     {

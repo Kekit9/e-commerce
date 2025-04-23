@@ -28,7 +28,7 @@ class CurrencyRateController extends Controller
     /**
      * Update currency rates manually
      *
-     * @return array
+     * @return array<string, mixed>
      *
      * @throws Exception
      */

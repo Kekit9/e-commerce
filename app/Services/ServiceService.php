@@ -34,7 +34,7 @@ class ServiceService
      *
      * @param Request $request
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function getAllServices(Request $request): array
     {

@@ -24,8 +24,5 @@ WORKDIR /var/www
 # Copy the local code into the container
 COPY .. .
 
-# Install PHP dependencies (if using Laravel)
-RUN composer install
-
 # Expose port 9000 to connect to PHP-FPM
 EXPOSE 9000

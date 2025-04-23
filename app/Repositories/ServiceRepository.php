@@ -8,6 +8,7 @@ use App\Interfaces\ServiceRepositoryInterface;
 use App\Models\Service;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ServiceRepository implements ServiceRepositoryInterface
 {
@@ -37,13 +38,15 @@ class ServiceRepository implements ServiceRepositoryInterface
      *
      * @param Request $request
      *
-     * @return array Returns a collection of all services
+     * @return array{
+     *      services: LengthAwarePaginator<Service>
+     * }
      */
     public function getAllServices(Request $request): array
     {
-        $sortBy = $request->query('sort_by', self::DEFAULT_SORT_VALUE);
-        $sortDirection = $request->query('sort_direction', self::DEFAULT_SORT_DIRECTION);
-        $perPage = $request->query('per_page', self::DEFAULT_PER_PAGE);
+        $sortBy = $this->getStringParam($request, 'sort_by', self::DEFAULT_SORT_VALUE);
+        $sortDirection = $this->getStringParam($request, 'sort_direction', self::DEFAULT_SORT_DIRECTION);
+        $perPage = $this->getIntParam($request, 'per_page', self::DEFAULT_PER_PAGE);
         $serviceType = $request->query('service_type');
 
         $query = $this->model->query();
@@ -54,8 +57,11 @@ class ServiceRepository implements ServiceRepositoryInterface
 
         $query->orderBy($sortBy, $sortDirection);
 
+        /** @var LengthAwarePaginator<Service> $paginator */
+        $paginator = $query->paginate($perPage);
+
         return [
-            'services' => $query->paginate($perPage),
+            'services' => $paginator,
         ];
     }
 
@@ -86,6 +92,7 @@ class ServiceRepository implements ServiceRepositoryInterface
         $service = $this->model->findOrFail($id);
         $service->update($data);
 
+        /** @var Service */
         return $service->fresh();
     }
 
@@ -104,5 +111,23 @@ class ServiceRepository implements ServiceRepositoryInterface
         $service->delete();
 
         return true;
+    }
+
+    /**
+     * Get string parameter from request with type safety
+     */
+    private function getStringParam(Request $request, string $key, string $default): string
+    {
+        $value = $request->query($key, $default);
+        return is_array($value) ? $default : (string)$value;
+    }
+
+    /**
+     * Get integer parameter from request with type safety
+     */
+    private function getIntParam(Request $request, string $key, int $default): int
+    {
+        $value = $request->query($key, (string)$default);
+        return is_array($value) ? $default : (int)$value;
     }
 }

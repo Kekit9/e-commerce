@@ -1,14 +1,12 @@
 parameters:
     level: 8
+    checkGenericClassInNonGenericObjectType: false
     paths:
-        - app
-        - config
-        - database
-        - public
-        - resources
-        - routes
-        - storage
-    # Optional exclusions
+       - app
+       - routes
+       - database
+       - resources
     excludePaths:
-        - tests
-        - templates
+       - vendor
+       - storage
+       - bootstrap/cache

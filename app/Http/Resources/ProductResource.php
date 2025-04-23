@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Resources;
 
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -19,7 +20,7 @@ class ProductResource extends JsonResource
     /**
      * Constructs a new instance from a resource object
      *
-     * @param object $resource
+     * @param Product $resource
      */
     public function __construct($resource)
     {

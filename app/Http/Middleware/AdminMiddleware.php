@@ -14,17 +14,22 @@ class AdminMiddleware
     /**
      * Handle an incoming request.
      *
+     * @param Request $request
      * @param Closure(Request): (Response) $next
      *
-     * @return JsonResponse|mixed|Response
+     * @return JsonResponse|Response
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next): JsonResponse|Response
     {
-        if ($request->route()->getActionMethod() === 'index') {
+        $route = $request->route();
+
+        if ($route && $route->getActionMethod() === 'index') {
             return $next($request);
         }
 
-        if (auth()->check() && auth()->user()->role === 'admin') {
+        $user = auth()->user();
+
+        if ($user && $user->role === 'admin') {
             return $next($request);
         }
 

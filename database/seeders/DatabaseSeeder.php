@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use App\Models\Service;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Database\Eloquent\Collection;
 
 class DatabaseSeeder extends Seeder
 {
@@ -19,8 +20,11 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call(CurrencyRatesSeeder::class);
+
+        /** @var Collection<int, Maker> $makers */
         $makers = Maker::factory(50)->create();
 
+        /** @var Collection<int, Product> $products */
         $products = Product::factory(150)->create([
             'maker_id' => fn () => $makers->random()->id
         ]);

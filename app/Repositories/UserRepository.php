@@ -14,7 +14,7 @@ class UserRepository implements UserRepositoryInterface
     /**
      * Create a new user.
      *
-     * @param array $data
+     * @param array<string, mixed> $data User data (name, email, password, etc.)
      *
      * @return User
      */
@@ -26,9 +26,17 @@ class UserRepository implements UserRepositoryInterface
     /**
      * Login user in system.
      *
-     * @param array $credentials
+     * @param array<string, string> $credentials Login credentials (email, password)
      *
-     * @return array
+     * @return array{
+     *      user: array{
+     *          id: int,
+     *          name: string,
+     *          email: string,
+     *          role: string
+     *      },
+     *      token: string
+     *  }
      *
      * @throws AuthenticationException
      */
@@ -39,6 +47,10 @@ class UserRepository implements UserRepositoryInterface
         }
 
         $user = Auth::user();
+
+        if (!$user instanceof User) {
+            throw new AuthenticationException(__('auth.user_not_found'));
+        }
 
         return [
             'user' => [

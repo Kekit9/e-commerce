@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Resources;
 
+use App\Models\Service;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Request;
 
@@ -18,7 +19,7 @@ class ServiceResource extends JsonResource
     /**
      * Constructs a new instance from a resource object
      *
-     * @param object $resource
+     * @param Service $resource
      */
     public function __construct($resource)
     {
@@ -33,6 +34,8 @@ class ServiceResource extends JsonResource
 
     /**
      * Transform the resource into an array.
+     *
+     * @param Request $request
      *
      * @return array<string, mixed>
      */

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Interfaces\CatalogExportRepositoryInterface;
+use App\Models\Product;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 use League\Csv\CannotInsertRecord;
@@ -32,6 +33,15 @@ class CatalogExportService
         $this->rabbitMQService = $rabbitMQService;
     }
 
+    /**
+     * Export catalog to CSV
+     *
+     * @return array{
+     *     success: bool,
+     *     message: string,
+     *     error: string|null
+     * }
+     */
     public function exportCatalog(): array
     {
         try {
@@ -65,7 +75,7 @@ class CatalogExportService
     /**
      * Generate CSV content from products
      *
-     * @param Collection $products
+     * @param Collection<int, Product> $products
      *
      * @return string
      *

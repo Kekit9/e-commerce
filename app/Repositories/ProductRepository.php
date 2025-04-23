@@ -8,6 +8,7 @@ use App\Interfaces\ProductRepositoryInterface;
 use App\Models\Product;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ProductRepository implements ProductRepositoryInterface
 {
@@ -41,15 +42,18 @@ class ProductRepository implements ProductRepositoryInterface
      *
      * @param Request $request
      *
-     * @return array
+     * @return array{
+     *      products: LengthAwarePaginator<Product>,
+     *      currency_rates: array<string, mixed>
+     * }
      */
     public function getAllProducts(Request $request): array
     {
         $makerId = $request->query('maker_id');
         $serviceId = $request->query('service_id');
-        $sortBy = $request->query('sort_by', self::DEFAULT_SORT_VALUE);
-        $sortDirection = $request->query('sort_direction', self::DEFAULT_SORT_DIRECTION);
-        $perPage = $request->query('per_page', self::DEFAULT_PER_PAGE);
+        $sortBy = $this->getStringParam($request, 'sort_by', self::DEFAULT_SORT_VALUE);
+        $sortDirection = $this->getStringParam($request, 'sort_direction', self::DEFAULT_SORT_DIRECTION);
+        $perPage = $this->getIntParam($request, 'per_page', self::DEFAULT_PER_PAGE);
 
         $query = $this->model->with('maker', 'services');
 
@@ -63,9 +67,15 @@ class ProductRepository implements ProductRepositoryInterface
 
         $query->orderBy($sortBy, $sortDirection);
 
+        /** @var LengthAwarePaginator<Product> $paginator */
+        $paginator = $query->paginate($perPage);
+
+        /** @var array<string, mixed> $rates */
+        $rates = $this->currencyRateRepository->getAllRates()->toArray();
+
         return [
-            'products' => $query->paginate($perPage),
-            'currency_rates' => $this->currencyRateRepository->getAllRates()
+            'products' => $paginator,
+            'currency_rates' => $rates
         ];
     }
 
@@ -114,5 +124,23 @@ class ProductRepository implements ProductRepositoryInterface
         $product->delete();
 
         return true;
+    }
+
+    /**
+     * Get string parameter from request with type safety
+     */
+    private function getStringParam(Request $request, string $key, string $default): string
+    {
+        $value = $request->query($key, $default);
+        return is_array($value) ? $default : (string)$value;
+    }
+
+    /**
+     * Get integer parameter from request with type safety
+     */
+    private function getIntParam(Request $request, string $key, int $default): int
+    {
+        $value = $request->query($key, (string)$default);
+        return is_array($value) ? $default : (int)$value;
     }
 }

@@ -29,9 +29,9 @@ class AuthorizationService
     /**
      * Attempt to authenticate a user
      *
-     * @param array $credentials
+     * @param array<string, string> $credentials Array containing login credentials (typically 'email' and 'password')
      *
-     * @return array
+     * @return array<string, mixed>
      *
      * @throws AuthenticationException When authentication fails
      *

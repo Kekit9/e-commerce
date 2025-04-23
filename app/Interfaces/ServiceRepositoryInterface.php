@@ -5,13 +5,18 @@ namespace App\Interfaces;
 use App\Models\Service;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 interface ServiceRepositoryInterface
 {
     /**
      * Get all services with relationships
      *
-     * @return array the raw pagination object
+     * @param Request $request
+     *
+     * @return array{
+     *     services: LengthAwarePaginator<Service>
+     * }
      */
     public function getAllServices(Request $request): array;
 

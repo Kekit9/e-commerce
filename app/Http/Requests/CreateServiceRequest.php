@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\Rules\Unique;
 
 class CreateServiceRequest extends FormRequest
 {
@@ -23,7 +23,7 @@ class CreateServiceRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, ValidationRule|array|string>
+     * @return array<string, array<int, Unique|string>|string>
      */
     public function rules(): array
     {
@@ -34,9 +34,9 @@ class CreateServiceRequest extends FormRequest
                 'max:255',
                 Rule::unique('services')->where(function ($query) {
                     return $query
-                        ->where('service_type', request('service_type'))
-                        ->where('duration', request('duration'))
-                        ->where('price', request('price'));
+                        ->where('service_type', $this->input('service_type'))
+                        ->where('duration', $this->input('duration'))
+                        ->where('price', $this->input('price'));
                 })
             ],
             'duration' => 'required|numeric',

@@ -33,7 +33,7 @@ class CurrencyRateService
     /**
      * Fetch rates from API and update database
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function fetchAndUpdateRates(): array
     {
@@ -67,7 +67,7 @@ class CurrencyRateService
     /**
      * Fetch currency rates from external API
      *
-     * @return array
+     * @return array<int, mixed>
      *
      * @throws Exception
      */

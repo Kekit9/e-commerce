@@ -2,6 +2,7 @@
 
 namespace App\Interfaces;
 
+use App\Models\CurrencyRate;
 use Illuminate\Database\Eloquent\Collection;
 
 interface CurrencyRateRepositoryInterface
@@ -9,7 +10,13 @@ interface CurrencyRateRepositoryInterface
     /**
      * Update or insert currency rates
      *
-     * @param array $rates
+     * @param array<int, array{
+     *     currency_iso: string,
+     *     currency_code: string,
+     *     buy_rate: float,
+     *     sale_rate: float,
+     *     last_updated: string
+     * }> $rates Array of currency rate data
      *
      * @return void
      */
@@ -18,7 +25,7 @@ interface CurrencyRateRepositoryInterface
     /**
      * Get all currency rates from database
      *
-     * @return Collection
+     * @return Collection<int, CurrencyRate>
      */
     public function getAllRates(): Collection;
 }

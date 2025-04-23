@@ -16,6 +16,7 @@ services:
       - app-network
     depends_on:
       - db
+      - rabbitmq
 
   # MySQL service
   db:
@@ -47,6 +48,23 @@ services:
       - "8080:80"
     networks:
       - app-network
+
+  rabbitmq:
+    image: rabbitmq:4-management
+    container_name: rabbitmq
+    ports:
+        - "5672:5672"  # AMQP
+        - "15672:15672"  # Web UI
+    environment:
+        RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-guest}
+        RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-guest}
+    networks:
+        - app-network
+    healthcheck:
+        test: [ "CMD", "rabbitmqctl", "status" ]
+        interval: 10s
+        timeout: 5s
+        retries: 5
 
 networks:
   app-network:

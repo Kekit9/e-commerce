@@ -11,7 +11,7 @@ interface UserRepositoryInterface
     /**
      * Create a new user record
      *
-     * @param array $data User data including name, email, password etc.
+     * @param array<string, mixed> $data User data including name, email, password etc.
      *
      * @return User Newly created User model instance
      *
@@ -22,9 +22,17 @@ interface UserRepositoryInterface
     /**
      * Attempt to authenticate a user
      *
-     * @param array $credentials Authentication credentials (email, password)
+     * @param array<string, string> $credentials Authentication credentials (email, password)
      *
-     * @return array
+     * @return array{
+     *      user: array{
+     *          id: int,
+     *          name: string,
+     *          email: string,
+     *          role: string
+     *      },
+     *      token: string
+     * }
      *
      * @throws AuthenticationException If authentication fails
      */

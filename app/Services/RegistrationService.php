@@ -29,7 +29,7 @@ class RegistrationService
     /**
      * Handle user registration.
      *
-     * @param array $data
+     * @param array<string, mixed> $data
      *
      * @return User
      */

@@ -14,7 +14,13 @@ class CurrencyRateRepository implements CurrencyRateRepositoryInterface
     /**
      * Update or insert currency rates
      *
-     * @param array $rates
+     * @param array<int, array{
+     *      currency_iso: string,
+     *      currency_code: string,
+     *      buy_rate: float,
+     *      sale_rate: float,
+     *      last_updated: string
+     * }> $rates Array of currency rates data
      *
      * @return void
      */
@@ -30,7 +36,7 @@ class CurrencyRateRepository implements CurrencyRateRepositoryInterface
     /**
      * Get all existing currency rates
      *
-     * @return Collection
+     * @return Collection<int, CurrencyRate>
      */
     public function getAllRates(): Collection
     {

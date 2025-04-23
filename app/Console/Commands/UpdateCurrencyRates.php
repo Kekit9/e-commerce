@@ -46,13 +46,22 @@ class UpdateCurrencyRates extends Command
 
         if ($result['success']) {
             $this->info('Success: ' . $result['message']);
-            $this->info(json_encode($this->currencyRateService->getAllRates(), JSON_PRETTY_PRINT));
+
+            $rates = $this->currencyRateService->getAllRates();
+            $json = json_encode($rates->toArray(), JSON_PRETTY_PRINT);
+
+            if ($json === false) {
+                $this->warn(__('currency.warning'));
+                $this->info(__('currency.updated_but'));
+            } else {
+                $this->info(__('currency.updated'));
+                $this->info($json);
+            }
 
             return 0;
         }
 
         $this->error('Error: ' . $result['message']);
-
         return 1;
     }
 }

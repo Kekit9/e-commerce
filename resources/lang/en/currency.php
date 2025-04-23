@@ -4,6 +4,8 @@ return [
     'request_failed' => 'HTTP request failed',
     'updated' => 'Rates updated',
     'queued' => 'Catalog export queued for processing',
-    'export_failed' => 'Export failed:'
+    'export_failed' => 'Export failed:',
+    'warning' => 'Warning: Rates updated successfully but could not format output',
+    'updated_but' => 'Rates were updated but cannot be displayed',
     // other currency-related messages
 ];
