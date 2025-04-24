@@ -7,30 +7,46 @@ namespace App\Services;
 use App\Interfaces\CatalogExportRepositoryInterface;
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Log;
+use Psr\Log\LoggerInterface;
 use League\Csv\CannotInsertRecord;
 use League\Csv\Exception;
 use League\Csv\Writer;
 
 class CatalogExportService
 {
+    public const NA = 'notApplicable';
+
     /**
      * The catalog export repository instance
      *
      * @var CatalogExportRepositoryInterface
      */
     protected CatalogExportRepositoryInterface $catalogExportRepository;
+
+    /**
+     * The RabbitMQ service instance
+     *
+     * @var RabbitMQService
+     */
     protected RabbitMQService $rabbitMQService;
+
+    /**
+     * The logger instance
+     *
+     * @var LoggerInterface
+     */
+    protected LoggerInterface $logger;
 
     /**
      * CatalogExportService constructor
      *
      * @param CatalogExportRepositoryInterface $catalogExportRepository The catalog export repository
      */
-    public function __construct(CatalogExportRepositoryInterface $catalogExportRepository, RabbitMQService $rabbitMQService)
+    public function __construct(CatalogExportRepositoryInterface $catalogExportRepository, RabbitMQService $rabbitMQService, LoggerInterface $logger)
     {
         $this->catalogExportRepository = $catalogExportRepository;
         $this->rabbitMQService = $rabbitMQService;
+        $this->logger = $logger;
     }
 
     /**
@@ -62,7 +78,12 @@ class CatalogExportService
             ];
 
         } catch (\Exception $e) {
-            Log::error(__('currency.export_failed') . $e->getMessage());
+            $this->logger->error(__('currency.export_failed'), [
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
 
             return [
                 'success' => false,
@@ -92,8 +113,8 @@ class CatalogExportService
             $product->name,
             $product->description,
             $product->price,
-            $product->maker?->name ?? 'N/A',
-            $product->services->pluck('name')->implode(', ') ?: 'N/A'
+            $product->maker?->name ?? self::NA,
+            $product->services->pluck('name')->implode(', ') ?: self::NA,
         ]));
 
         return $csv->getContent();

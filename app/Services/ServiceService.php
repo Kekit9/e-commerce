@@ -51,6 +51,7 @@ class ServiceService
     public function createService(array $data): JsonResponse
     {
         $service = $this->serviceRepository->createService($data);
+
         return response()->json(new ServiceResource($service));
     }
 
@@ -67,6 +68,7 @@ class ServiceService
     public function updateService(array $data, int $id): JsonResponse
     {
         $service = $this->serviceRepository->updateService($data, $id);
+
         return response()->json(new ServiceResource($service));
     }
 
@@ -82,6 +84,7 @@ class ServiceService
     public function deleteService(int $id): JsonResponse
     {
         $this->serviceRepository->deleteService($id);
+
         return response()->json();
     }
 }

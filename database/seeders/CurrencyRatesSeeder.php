@@ -19,6 +19,6 @@ class CurrencyRatesSeeder extends Seeder
     public function run()
     {
         \Artisan::call('currency-rates:update');
-        $this->command->info('Initial currency rates loaded!');
+        $this->command->info(__('currency.initial_load'));
     }
 }

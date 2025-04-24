@@ -51,6 +51,7 @@ class ProductService
     public function createProduct(array $data): JsonResponse
     {
         $product = $this->productRepository->createProduct($data);
+
         return response()->json(new ProductResource($product));
     }
 
@@ -67,6 +68,7 @@ class ProductService
     public function updateProduct(array $data, int $id): JsonResponse
     {
         $product = $this->productRepository->updateProduct($data, $id);
+
         return response()->json(new ProductResource($product));
     }
 
@@ -82,6 +84,7 @@ class ProductService
     public function deleteProduct(int $id): JsonResponse
     {
         $this->productRepository->deleteProduct($id);
+
         return response()->json([
             'message' => __('product.deleted_successfully'),
             'id' => $id

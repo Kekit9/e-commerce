@@ -119,6 +119,7 @@ class ServiceRepository implements ServiceRepositoryInterface
     private function getStringParam(Request $request, string $key, string $default): string
     {
         $value = $request->query($key, $default);
+
         return is_array($value) ? $default : (string)$value;
     }
 
@@ -128,6 +129,7 @@ class ServiceRepository implements ServiceRepositoryInterface
     private function getIntParam(Request $request, string $key, int $default): int
     {
         $value = $request->query($key, (string)$default);
+
         return is_array($value) ? $default : (int)$value;
     }
 }

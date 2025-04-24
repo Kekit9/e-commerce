@@ -41,7 +41,7 @@ class UpdateCurrencyRates extends Command
      */
     public function handle(): int
     {
-        $this->info('Starting currency rates update...');
+        $this->info(__('currency.update_started'));
         $result = $this->currencyRateService->fetchAndUpdateRates();
 
         if ($result['success']) {
@@ -62,6 +62,7 @@ class UpdateCurrencyRates extends Command
         }
 
         $this->error('Error: ' . $result['message']);
+
         return 1;
     }
 }

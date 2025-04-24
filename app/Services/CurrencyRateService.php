@@ -8,11 +8,16 @@ use App\Interfaces\CurrencyRateRepositoryInterface;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Client\Factory as HttpClientFactory;
 use SimpleXMLElement;
 
 class CurrencyRateService
 {
+    /**
+     * Default URL for fetching currency rates
+     *
+     * @var string
+     */
     public const DEFAULT_CURRENCY_URL = 'https://bankdabrabyt.by/export_courses.php';
 
     /**
@@ -23,11 +28,20 @@ class CurrencyRateService
     protected CurrencyRateRepositoryInterface $currencyRateRepository;
 
     /**
-     * @param CurrencyRateRepositoryInterface $currencyRateRepository
+     * HTTP client factory instance
+     *
+     * @var HttpClientFactory
      */
-    public function __construct(CurrencyRateRepositoryInterface $currencyRateRepository)
+    protected HttpClientFactory $http;
+
+    /**
+     * @param CurrencyRateRepositoryInterface $currencyRateRepository
+     * @param HttpClientFactory $http
+     */
+    public function __construct(CurrencyRateRepositoryInterface $currencyRateRepository, HttpClientFactory $http)
     {
         $this->currencyRateRepository = $currencyRateRepository;
+        $this->http = $http;
     }
 
     /**
@@ -47,6 +61,7 @@ class CurrencyRateService
                 'rates' => $rates
             ];
         } catch (Exception $e) {
+
             return [
                 'success' => false,
                 'message' => $e->getMessage()
@@ -73,7 +88,7 @@ class CurrencyRateService
      */
     private function fetchCurrencyRates(): array
     {
-        $response = Http::withOptions(['verify' => false])
+        $response = $this->http->withOptions(['verify' => false])
             ->get(self::DEFAULT_CURRENCY_URL);
 
         if (!$response->successful()) {

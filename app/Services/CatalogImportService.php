@@ -6,7 +6,7 @@ namespace App\Services;
 
 use App\Mail\CatalogExported;
 use Exception;
-use Illuminate\Support\Facades\Log;
+use Psr\Log\LoggerInterface;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
@@ -20,6 +20,21 @@ use PhpAmqpLib\Connection\AMQPStreamConnection;
  */
 class CatalogImportService
 {
+    /**
+     * @var LoggerInterface
+     */
+    private LoggerInterface $logger;
+
+    /**
+     * CatalogImportService constructor.
+     *
+     * @param LoggerInterface $logger
+     */
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
     /**
      * Processes catalog exports from RabbitMQ queue
      *
@@ -66,7 +81,12 @@ class CatalogImportService
 
                 $msg->ack();
             } catch (Exception $e) {
-                Log::error(__('catalog.processing_failed') . $e->getMessage());
+                $this->logger->error(__('catalog.processing_failed'), [
+                    'error' => $e->getMessage(),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'trace' => $e->getTraceAsString()
+                ]);
                 $msg->nack();
             }
         };

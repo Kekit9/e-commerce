@@ -33,7 +33,7 @@ class ConsumeCatalogExports extends Command
      */
     public function handle(CatalogImportService $importService): void
     {
-        $this->info('Starting catalog export consumer...');
+        $this->info(__('catalog.consuming_started'));
         $importService->processExports();
     }
 }

@@ -7,18 +7,40 @@ namespace App\Services;
 use Exception;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
-use Illuminate\Support\Facades\Log;
+use Psr\Log\LoggerInterface;
 
 class RabbitMQService
 {
     /**
+     * @var LoggerInterface
+     */
+    private LoggerInterface $logger;
+
+    /**
+     * RabbitMQService constructor.
+     *
+     * @param LoggerInterface $logger
+     */
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    /**
      * Publish CSV content to RabbitMQ queue
+     *
+     * @param string $content
+     *
+     * @return void
      *
      * @throws Exception
      */
     public function publishToCatalogExportQueue(string $content): void
     {
-        Log::info(__('rabbitmq.publishing_in_process') . strlen($content));
+        $this->logger->info(__('rabbitmq.publishing_in_process'), [
+            'content_length' => strlen($content),
+            'queue' => 'catalog_export'
+        ]);
 
         $connection = new AMQPStreamConnection(
             config('rabbitmq.host'),
