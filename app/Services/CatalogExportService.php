@@ -17,36 +17,17 @@ class CatalogExportService
     public const NA = 'notApplicable';
 
     /**
-     * The catalog export repository instance
-     *
-     * @var CatalogExportRepositoryInterface
-     */
-    protected CatalogExportRepositoryInterface $catalogExportRepository;
-
-    /**
-     * The RabbitMQ service instance
-     *
-     * @var RabbitMQService
-     */
-    protected RabbitMQService $rabbitMQService;
-
-    /**
-     * The logger instance
-     *
-     * @var LoggerInterface
-     */
-    protected LoggerInterface $logger;
-
-    /**
      * CatalogExportService constructor
      *
      * @param CatalogExportRepositoryInterface $catalogExportRepository The catalog export repository
+     * @param RabbitMQService $rabbitMQService The RabbitMQ service
+     * @param LoggerInterface $logger The logger instance
      */
-    public function __construct(CatalogExportRepositoryInterface $catalogExportRepository, RabbitMQService $rabbitMQService, LoggerInterface $logger)
-    {
-        $this->catalogExportRepository = $catalogExportRepository;
-        $this->rabbitMQService = $rabbitMQService;
-        $this->logger = $logger;
+    public function __construct(
+        protected CatalogExportRepositoryInterface $catalogExportRepository,
+        protected RabbitMQService $rabbitMQService,
+        protected LoggerInterface $logger
+    ) {
     }
 
     /**
@@ -57,6 +38,8 @@ class CatalogExportService
      *     message: string,
      *     error: string|null
      * }
+     *
+     * @throws Exception
      */
     public function exportCatalog(): array
     {
@@ -85,11 +68,7 @@ class CatalogExportService
                 'trace' => $e->getTraceAsString()
             ]);
 
-            return [
-                'success' => false,
-                'message' => __('currency.export_failed'),
-                'error' => config('app.debug') ? $e->getMessage() : null
-            ]; // todo: опять можно кинуть красивое исключение и возвращать void
+            throw new Exception(__('currency.export_failed') . $e->getMessage());
         }
     }
 

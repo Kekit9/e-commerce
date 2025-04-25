@@ -6,42 +6,43 @@ namespace App\Services;
 
 use App\Interfaces\ServiceRepositoryInterface;
 use App\Http\Resources\ServiceResource;
+use App\Models\Service;
+use App\Repositories\ServiceRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class ServiceService
 {
-    /**
-     * The service repository instance
-     *
-     * @var ServiceRepositoryInterface
-     */
-    // TODO: тут лучше использовать constructor property promotion, как и везде в других местах
-    protected ServiceRepositoryInterface $serviceRepository;
-
     /**
      * ServiceService constructor
      *
      * @param ServiceRepositoryInterface $serviceRepository The service repository
      */
-    public function __construct(ServiceRepositoryInterface $serviceRepository)
-    {
-        $this->serviceRepository = $serviceRepository;
+    public function __construct(
+        protected ServiceRepositoryInterface $serviceRepository
+    ) {
     }
 
     /**
      * Get all services
      *
-     * @param Request $request
+     * @param array{
+     *     sort_by?: string,
+     *     sort_direction?: 'asc'|'desc',
+     *     per_page?: int,
+     *     service_type?: string|null,
+     * } $params Parameters for filtering and pagination
      *
      * @return array<string, mixed>
-     *
-     * TODO: уровень сервисов не знает откуда данные пришли, уровень данных тем более не должен обладать этой инфой
      */
-    public function getAllServices(Request $request): array
+    public function getAllServices(array $params): array
     {
-        return $this->serviceRepository->getAllServices($request);
+        return $this->serviceRepository->getAllServices([
+            'sort_by' => $params['sort_by'] ?? ServiceRepository::DEFAULT_SORT_VALUE,
+            'sort_direction' => $params['sort_direction'] ?? ServiceRepository::DEFAULT_SORT_DIRECTION,
+            'per_page' => $params['per_page'] ?? ServiceRepository::DEFAULT_PER_PAGE,
+            'service_type' => $params['service_type'] ?? null,
+        ]);
     }
 
     /**
@@ -49,14 +50,11 @@ class ServiceService
      *
      * @param array<string, mixed> $data The service data to create
      *
-     * @return JsonResponse Returns JSON response with the created service resource
-     * TODO: тут лучше возвращать сущность а на уровне контроллера трансформировать в Response
+     * @return Service Returns JSON response with the created service resource
      */
-    public function createService(array $data): JsonResponse
+    public function createService(array $data): Service
     {
-        $service = $this->serviceRepository->createService($data);
-
-        return response()->json(new ServiceResource($service));
+        return $this->serviceRepository->createService($data);
     }
 
     /**

@@ -7,7 +7,6 @@ namespace App\Repositories;
 use App\Interfaces\ProductRepositoryInterface;
 use App\Models\Product;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class ProductRepository implements ProductRepositoryInterface
@@ -19,63 +18,50 @@ class ProductRepository implements ProductRepositoryInterface
     public const DEFAULT_SORT_DIRECTION = 'asc';
 
     /**
-     * @var Product The product model instance
-     */
-    protected Product $model;
-
-
-    private CurrencyRateRepository $currencyRateRepository;
-
-    /**
      * ProductRepository constructor
      *
-     * @param Product $product The product model
+     * @param Product $model
+     * @param CurrencyRateRepository $currencyRateRepository
      */
-    public function __construct(Product $product, CurrencyRateRepository $currencyRateRepository)
-    {
-        $this->model = $product;
-        $this->currencyRateRepository = $currencyRateRepository;
+    public function __construct(
+        protected Product $model,
+        private readonly CurrencyRateRepository $currencyRateRepository
+    ) {
     }
 
     /**
      * Get all products with relationships
      *
-     * @param Request $request
+     * @param array{
+     *     maker_id: int|null,
+     *     service_id: int|null,
+     *     sort_by: string,
+     *     sort_direction: 'asc'|'desc',
+     *     per_page: int
+     * } $params Parameters for filtering and pagination
      *
      * @return array{
-     *      products: LengthAwarePaginator<Product>,
-     *      currency_rates: array<string, mixed>
+     *     products: LengthAwarePaginator<Product>,
+     *     currency_rates: array<string, mixed>
      * }
      */
-    public function getAllProducts(Request $request): array
+    public function getAllProducts(array $params): array
     {
-        $makerId = $request->query('maker_id');
-        $serviceId = $request->query('service_id');
-        $sortBy = $this->getStringParam($request, 'sort_by', self::DEFAULT_SORT_VALUE);
-        $sortDirection = $this->getStringParam($request, 'sort_direction', self::DEFAULT_SORT_DIRECTION);
-        $perPage = $this->getIntParam($request, 'per_page', self::DEFAULT_PER_PAGE);
-
         $query = $this->model->with('maker', 'services');
 
-        if ($makerId !== null) {
-            $query->where('maker_id', $makerId);
+        if ($params['maker_id'] !== null) {
+            $query->where('maker_id', $params['maker_id']);
         }
 
-        if ($serviceId !== null) {
-            $query->whereIn('service_id', $serviceId);
+        if ($params['service_id'] !== null) {
+            $query->where('service_id', $params['service_id']);
         }
-
-        $query->orderBy($sortBy, $sortDirection);
-
-        /** @var LengthAwarePaginator<Product> $paginator */
-        $paginator = $query->paginate($perPage);
-
-        /** @var array<string, mixed> $rates */
-        $rates = $this->currencyRateRepository->getAllRates()->toArray();
 
         return [
-            'products' => $paginator,
-            'currency_rates' => $rates
+            'products' => $query
+                ->orderBy($params['sort_by'], $params['sort_direction'])
+                ->paginate($params['per_page']),
+            'currency_rates' => $this->currencyRateRepository->getAllRates()->toArray()
         ];
     }
 
@@ -124,25 +110,5 @@ class ProductRepository implements ProductRepositoryInterface
         $product->delete();
 
         return true;
-    }
-
-    /**
-     * Get string parameter from request with type safety
-     */
-    private function getStringParam(Request $request, string $key, string $default): string
-    {
-        $value = $request->query($key, $default);
-
-        return is_array($value) ? $default : (string)$value;
-    }
-
-    /**
-     * Get integer parameter from request with type safety
-     */
-    private function getIntParam(Request $request, string $key, int $default): int
-    {
-        $value = $request->query($key, (string)$default);
-
-        return is_array($value) ? $default : (int)$value;
     }
 }

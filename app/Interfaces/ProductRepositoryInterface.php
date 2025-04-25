@@ -4,22 +4,25 @@ namespace App\Interfaces;
 
 use App\Models\Product;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 interface ProductRepositoryInterface
 {
     /**
-     * Get all products with relationships
-     *
-     * @param Request $request
+     * @param array{
+     *     sort_by: string,
+     *     sort_direction: 'asc'|'desc',
+     *     per_page: int,
+     *     maker_id: int|null,
+     *     service_id: int|null
+     * } $params
      *
      * @return array{
      *     products: LengthAwarePaginator<Product>,
      *     currency_rates: array<string, mixed>
      * }
      */
-    public function getAllProducts(Request $request): array;
+    public function getAllProducts(array $params): array;
 
     /**
      * Create a new product

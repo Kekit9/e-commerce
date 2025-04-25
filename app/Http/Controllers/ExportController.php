@@ -6,38 +6,28 @@ namespace App\Http\Controllers;
 
 use App\Services\CatalogExportService;
 use Illuminate\Http\JsonResponse;
+use League\Csv\Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class ExportController extends Controller
 {
     /**
-     * The CatalogExport service instance
-     *
-     * @var CatalogExportService
-     */
-    protected CatalogExportService $catalogExportService;
-
-    /**
-     * The logger instance
-     *
-     * @var LoggerInterface
-     */
-    protected LoggerInterface $logger;
-
-    /**
      * @param CatalogExportService $catalogExportService
+     * @param LoggerInterface $logger
      */
-    public function __construct(CatalogExportService $catalogExportService, LoggerInterface $logger)
-    {
-        $this->catalogExportService = $catalogExportService;
-        $this->logger = $logger;
+    public function __construct(
+        protected CatalogExportService $catalogExportService,
+        protected LoggerInterface $logger
+    ) {
     }
 
     /**
      * Export catalog in AWS S3 storage in CSV format
      *
      * @return JsonResponse
+     *
+     * @throws Exception
      */
     public function exportCatalog(): JsonResponse
     {

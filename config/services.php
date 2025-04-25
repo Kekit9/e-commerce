@@ -32,4 +32,7 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'currency' => [
+        'url' => env('CURRENCY_API_URL'),
+    ],
 ];

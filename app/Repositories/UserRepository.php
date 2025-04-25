@@ -8,6 +8,7 @@ use App\Interfaces\UserRepositoryInterface;
 use App\Models\User;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Sanctum\NewAccessToken;
 
 class UserRepository implements UserRepositoryInterface
 {
@@ -24,22 +25,13 @@ class UserRepository implements UserRepositoryInterface
     }
 
     /**
-     * Login user in system.
+     * Attempt to authenticate user and return auth tokens
      *
-     * @param array<string, string> $credentials Login credentials (email, password)
+     * @param array<string, string> $credentials
      *
-     * @return array{
-     *      user: array{
-     *          id: int,
-     *          name: string,
-     *          email: string,
-     *          role: string
-     *      },
-     *      token: string
-     *  }
+     * @return array{user: User, token: NewAccessToken}
      *
      * @throws AuthenticationException
-     * todo: чуть чуть не уровень данных
      */
     public function attemptLogin(array $credentials): array
     {
@@ -47,6 +39,7 @@ class UserRepository implements UserRepositoryInterface
             throw new AuthenticationException(__('auth.invalid_cred'));
         }
 
+        /** @var User $user */
         $user = Auth::user();
 
         if (!$user instanceof User) {
@@ -54,13 +47,8 @@ class UserRepository implements UserRepositoryInterface
         }
 
         return [
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'role' => $user->role,
-            ],
-            'token' => $user->createToken('auth-token')->plainTextToken
+            'user' => $user,
+            'token' => $user->createToken('auth-token')
         ];
     }
 }

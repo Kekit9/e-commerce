@@ -7,7 +7,6 @@ namespace App\Repositories;
 use App\Interfaces\ServiceRepositoryInterface;
 use App\Models\Service;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class ServiceRepository implements ServiceRepositoryInterface
@@ -19,37 +18,37 @@ class ServiceRepository implements ServiceRepositoryInterface
     public const DEFAULT_SORT_DIRECTION = 'asc';
 
     /**
-     * @var Service The service model instance
-     */
-    protected Service $model;
-
-    /**
      * ServiceRepository constructor
      *
-     * @param Service $service The service model
+     * @param Service $model
      */
-    public function __construct(Service $service)
-    {
-        $this->model = $service;
+    public function __construct(
+        protected Service $model
+    ) {
     }
 
     /**
      * Get all services
      *
-     * @param Request $request
+     * @param array{
+     *     sort_by?: string,
+     *     sort_direction?: 'asc'|'desc',
+     *     per_page?: int,
+     *     service_type?: string|null,
+     * } $params Parameters for filtering and pagination
      *
      * @return array{
-     *      services: LengthAwarePaginator<Service>
+     *     services: LengthAwarePaginator<Service>
      * }
      */
-    public function getAllServices(Request $request): array
+    public function getAllServices(array $params): array
     {
-        $sortBy = $this->getStringParam($request, 'sort_by', self::DEFAULT_SORT_VALUE);
-        $sortDirection = $this->getStringParam($request, 'sort_direction', self::DEFAULT_SORT_DIRECTION);
-        $perPage = $this->getIntParam($request, 'per_page', self::DEFAULT_PER_PAGE);
-        $serviceType = $request->query('service_type');
+        $sortBy = $params['sort_by'] ?? self::DEFAULT_SORT_VALUE;
+        $sortDirection = $params['sort_direction'] ?? self::DEFAULT_SORT_DIRECTION;
+        $perPage = $params['per_page'] ?? self::DEFAULT_PER_PAGE;
+        $serviceType = $params['service_type'] ?? null;
 
-        $query = $this->model->query();
+        $query = $this->model->newQuery();
 
         if ($serviceType !== null) {
             $query->where('service_type', $serviceType);
@@ -57,11 +56,8 @@ class ServiceRepository implements ServiceRepositoryInterface
 
         $query->orderBy($sortBy, $sortDirection);
 
-        /** @var LengthAwarePaginator<Service> $paginator */
-        $paginator = $query->paginate($perPage);
-
         return [
-            'services' => $paginator,
+            'services' => $query->paginate($perPage)
         ];
     }
 
@@ -111,25 +107,5 @@ class ServiceRepository implements ServiceRepositoryInterface
         $service->delete();
 
         return true;
-    }
-
-    /**
-     * Get string parameter from request with type safety
-     */
-    private function getStringParam(Request $request, string $key, string $default): string
-    {
-        $value = $request->query($key, $default);
-
-        return is_array($value) ? $default : (string)$value;
-    }
-
-    /**
-     * Get integer parameter from request with type safety
-     */
-    private function getIntParam(Request $request, string $key, int $default): int
-    {
-        $value = $request->query($key, (string)$default);
-
-        return is_array($value) ? $default : (int)$value;
     }
 }

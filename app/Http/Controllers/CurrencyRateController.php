@@ -10,19 +10,9 @@ use Illuminate\Database\Eloquent\Collection;
 
 class CurrencyRateController extends Controller
 {
-    /**
-     * The CurrencyRateService service instance
-     *
-     * @var CurrencyRateService
-     */
-    private CurrencyRateService $currencyRateService;
-
-    /**
-     * @param CurrencyRateService $currencyRateService
-     */
-    public function __construct(CurrencyRateService $currencyRateService)
-    {
-        $this->currencyRateService = $currencyRateService;
+    public function __construct(
+        private readonly CurrencyRateService $currencyRateService
+    ) {
     }
 
     /**

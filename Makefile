@@ -24,11 +24,18 @@ localstack-down:
 kill-localstack:
 	$(DOCKER) kill 'CONTAINER ID'
 
-# Command to stop containers
-docker-down:
-	$(DOCKER) stop $$($(DOCKER) ps -q)
+# Commands for docker compose
+docker-up:
+	docker-compose up -d
 
-down: docker-down
+docker-build:
+	docker-compose build
+
+docker-logs:
+	docker-compose logs -f
+
+docker-ps:
+	docker-compose ps
 
 # Command for code analyse
 phpstan:

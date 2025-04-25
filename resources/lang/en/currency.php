@@ -9,5 +9,6 @@ return [
     'updated_but' => 'Rates were updated but cannot be displayed',
     'update_started' => 'Starting currency rates update...',
     'initial_load' => 'Initial currency rates loaded!',
+    'failed_update' => 'Failed to update currency rates',
     // other currency-related messages
 ];

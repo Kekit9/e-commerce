@@ -7,47 +7,37 @@ namespace App\Services;
 use App\Interfaces\CurrencyRateRepositoryInterface;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
-use Carbon\Carbon;
 use Illuminate\Http\Client\Factory as HttpClientFactory;
+use Psr\Clock\ClockInterface;
 use SimpleXMLElement;
 
 class CurrencyRateService
 {
     /**
-     * Default URL for fetching currency rates
-     *
-     * @var string
+     * Supported currency ISO codes
      */
-    public const DEFAULT_CURRENCY_URL = 'https://bankdabrabyt.by/export_courses.php'; // todo: ссылка должна приходить в конструктор, ты создал явную зависимость от этого доменного имени, поменяется у ребят хостинг и все будем сидеть плакать
-
-    /**
-     * Currency rate repository instance
-     *
-     * @var CurrencyRateRepositoryInterface
-     */
-    protected CurrencyRateRepositoryInterface $currencyRateRepository;
-
-    /**
-     * HTTP client factory instance
-     *
-     * @var HttpClientFactory
-     */
-    protected HttpClientFactory $http;
+    private const SUPPORTED_CURRENCIES = ['USD', 'EUR', 'RUB'];
 
     /**
      * @param CurrencyRateRepositoryInterface $currencyRateRepository
      * @param HttpClientFactory $http
+     * @param ClockInterface $clock
+     * @param string $currencyUrl
      */
-    public function __construct(CurrencyRateRepositoryInterface $currencyRateRepository, HttpClientFactory $http)
-    {
-        $this->currencyRateRepository = $currencyRateRepository;
-        $this->http = $http;
+    public function __construct(
+        protected CurrencyRateRepositoryInterface $currencyRateRepository,
+        protected HttpClientFactory $http,
+        protected ClockInterface $clock,
+        protected string $currencyUrl
+    ) {
     }
 
     /**
      * Fetch rates from API and update database
      *
      * @return array<string, mixed>
+     *
+     * @throws Exception
      */
     public function fetchAndUpdateRates(): array
     {
@@ -55,17 +45,9 @@ class CurrencyRateService
             $rates = $this->fetchCurrencyRates();
             $this->currencyRateRepository->upsertRates($rates);
 
-            return [
-                'success' => true,
-                'message' => __('currency.updated'),
-                'rates' => $rates
-            ]; // todo: тут можно было бы просто возвращать рэйты, без сообщений и пометки об успехе
+            return ['rates' => $rates];
         } catch (Exception $e) {
-
-            return [
-                'success' => false,
-                'message' => $e->getMessage() // todo:  а тут кидать красивый кастомный экспешн
-            ];
+            throw new Exception(__('currency.failed_update') . $e->getMessage());
         }
     }
 
@@ -89,7 +71,7 @@ class CurrencyRateService
     private function fetchCurrencyRates(): array
     {
         $response = $this->http->withOptions(['verify' => false])
-            ->get(self::DEFAULT_CURRENCY_URL);
+            ->get($this->currencyUrl);
 
         if (!$response->successful()) {
             throw new Exception(__('currency.request_failed'));
@@ -97,12 +79,12 @@ class CurrencyRateService
 
         $xml = new SimpleXMLElement($response->body());
         $centralOffice = $xml->filials->filial[0];
-        $now = Carbon::now(); // todo: PSR-20
+        $now = $this->clock->now();
 
         $rates = [];
         foreach ($centralOffice->rates->value as $value) {
             $iso = (string)$value['iso'];
-            if (in_array($iso, ['USD', 'EUR', 'RUB'])) { // todo: коды в константы
+            if (in_array($iso, self::SUPPORTED_CURRENCIES)) {
                 $rates[] = [
                     'currency_iso' => $iso,
                     'currency_code' => (string)$value['code'],

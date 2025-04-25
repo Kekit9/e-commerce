@@ -12,7 +12,10 @@ use App\Repositories\CurrencyRateRepository;
 use App\Repositories\ProductRepository;
 use App\Repositories\ServiceRepository;
 use App\Repositories\UserRepository;
+use App\Services\CurrencyRateService;
+use App\Services\SystemClock;
 use Illuminate\Support\ServiceProvider;
+use Psr\Clock\ClockInterface;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -26,6 +29,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ProductRepositoryInterface::class, ProductRepository::class);
         $this->app->bind(CurrencyRateRepositoryInterface::class, CurrencyRateRepository::class);
         $this->app->bind(CatalogExportRepositoryInterface::class, CatalogExportRepository::class);
+        $this->app->when(CurrencyRateService::class)
+            ->needs('$currencyUrl')
+            ->giveConfig('services.currency.url');
+        $this->app->bind(ClockInterface::class, SystemClock::class);
     }
 
     /**

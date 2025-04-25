@@ -24,6 +24,7 @@ class CatalogExported extends Mailable
         public string $filename,
         public string $downloadUrl
     ) {
+        $this->from(config('mail.from.address'));
     }
 
     /**
@@ -31,10 +32,9 @@ class CatalogExported extends Mailable
      *
      * @return $this
      */
-    public function build()
+    public function build(): static
     {
-        return $this->from(config('mail.from.address')) // todo: constructor
-            ->subject(__('catalog.exported_successfully'))
+        return $this->subject(__('catalog.exported_successfully'))
             ->view('emails.catalog-exported')
             ->with([
                 'filename' => $this->filename,

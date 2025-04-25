@@ -12,18 +12,11 @@ use Illuminate\Http\JsonResponse;
 class AuthorizationController extends Controller
 {
     /**
-     * The AuthorizationService service instance
-     *
-     * @var AuthorizationService
-     */
-    protected AuthorizationService $authorizationService;
-
-    /**
      * @param AuthorizationService $authorizationService
      */
-    public function __construct(AuthorizationService $authorizationService)
-    {
-        $this->authorizationService = $authorizationService;
+    public function __construct(
+        protected AuthorizationService $authorizationService
+    ) {
     }
 
     /**

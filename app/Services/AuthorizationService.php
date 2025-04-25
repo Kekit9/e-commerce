@@ -10,20 +10,13 @@ use Illuminate\Auth\AuthenticationException;
 class AuthorizationService
 {
     /**
-     * User repository instance
-     *
-     * @var UserRepositoryInterface
-     */
-    protected UserRepositoryInterface $userRepository;
-
-    /**
      * Create new service instance
      *
      * @param UserRepositoryInterface $userRepository
      */
-    public function __construct(UserRepositoryInterface $userRepository)
-    {
-        $this->userRepository = $userRepository;
+    public function __construct(
+        protected UserRepositoryInterface $userRepository
+    ) {
     }
 
     /**

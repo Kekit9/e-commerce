@@ -6,39 +6,43 @@ namespace App\Services;
 
 use App\Http\Resources\ProductResource;
 use App\Interfaces\ProductRepositoryInterface;
+use App\Models\Product;
+use App\Repositories\ProductRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ProductService
 {
-    /**
-     * The product repository instance
-     *
-     * @var ProductRepositoryInterface
-     */
-    protected ProductRepositoryInterface $productRepository;
-
     /**
      * ProductService constructor
      *
      * @param ProductRepositoryInterface $productRepository The product repository
      */
-    public function __construct(ProductRepositoryInterface $productRepository)
-    {
-        $this->productRepository = $productRepository;
+    public function __construct(
+        protected ProductRepositoryInterface $productRepository
+    ) {
     }
 
     /**
      * Get all products
      *
-     * @param Request $request
+     * @param array{
+     *     maker_id: int|null,
+     *     service_id: int|null,
+     *     sort_by: string,
+     *     sort_direction: 'asc'|'desc',
+     *     per_page: int
+     * } $params
      *
-     * @return array<string, mixed>
+     * @return array{
+     *     products: LengthAwarePaginator<Product>,
+     *     currency_rates: array<string, mixed>
+     * }
      */
-    public function getAllProducts(Request $request): array
+    public function getAllProducts(array $params): array
     {
-        return $this->productRepository->getAllProducts($request);
+        return $this->productRepository->getAllProducts($params);
     }
 
     /**
@@ -69,7 +73,10 @@ class ProductService
     {
         $product = $this->productRepository->updateProduct($data, $id);
 
-        return response()->json(new ProductResource($product));
+        return response()->json([
+            'success' => true,
+            'data' => new ProductResource($product),
+        ]);
     }
 
     /**

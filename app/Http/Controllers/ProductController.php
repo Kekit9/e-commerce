@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateProductRequest;
+use App\Http\Requests\GetProductsRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Product;
 use App\Services\ProductService;
@@ -21,36 +22,29 @@ use Illuminate\Http\Request;
 class ProductController extends Controller
 {
     /**
-     * The product service instance
-     *
-     * @var ProductService
-     */
-    protected ProductService $productService;
-
-    /**
      * ProductController constructor
      *
      * @param ProductService $productService The product service
      */
-    public function __construct(ProductService $productService)
-    {
-        $this->productService = $productService;
+    public function __construct(
+        protected ProductService $productService
+    ) {
     }
 
     /**
      * Get all products
      *
-     * @param Request $request
+     * @param GetProductsRequest $request
      *
      * @return JsonResponse filtered butch of items
      *
      * @throws AuthorizationException
      */
-    public function index(Request $request): JsonResponse
+    public function index(GetProductsRequest $request): JsonResponse
     {
         $this->authorize('viewAny', Product::class);
 
-        $products = $this->productService->getAllProducts($request);
+        $products = $this->productService->getAllProducts($request->validatedForService());
 
         return response()->json($products);
     }

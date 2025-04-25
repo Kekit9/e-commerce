@@ -11,20 +11,13 @@ use Illuminate\Http\JsonResponse;
 class RegistrationController extends Controller
 {
     /**
-     * The RegistrationService service instance
-     *
-     * @var RegistrationService
-     */
-    protected RegistrationService $registrationService;
-
-    /**
      * RegistrationController constructor
      *
      * @param RegistrationService $registrationService The registration service
      */
-    public function __construct(RegistrationService $registrationService)
-    {
-        $this->registrationService = $registrationService;
+    public function __construct(
+        protected RegistrationService $registrationService
+    ) {
     }
 
     /**

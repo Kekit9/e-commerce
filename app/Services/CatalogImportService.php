@@ -6,9 +6,11 @@ namespace App\Services;
 
 use App\Mail\CatalogExported;
 use Exception;
+use Illuminate\Support\Str;
+use PhpAmqpLib\Message\AMQPMessage;
 use Psr\Log\LoggerInterface;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Contracts\Filesystem\Filesystem;
+use Illuminate\Contracts\Mail\Mailer;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 
 /**
@@ -21,19 +23,21 @@ use PhpAmqpLib\Connection\AMQPStreamConnection;
 class CatalogImportService
 {
     /**
-     * @var LoggerInterface
-     * todo: докблоки не обязательно прям везде иметь, тока где массивы или ругается пхп стан или реально нужен коммент
-     */
-    private LoggerInterface $logger;
-
-    /**
      * CatalogImportService constructor.
      *
      * @param LoggerInterface $logger
+     * @param Filesystem $storage
+     * @param Mailer $mailer
+     * @param string $adminEmail
+     * @param AMQPStreamConnection $connection
      */
-    public function __construct(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
+    public function __construct(
+        private readonly LoggerInterface $logger,
+        private readonly Filesystem $storage,
+        private readonly Mailer $mailer,
+        private readonly string $adminEmail,
+        private readonly AMQPStreamConnection $connection
+    ) {
     }
 
     /**
@@ -50,34 +54,32 @@ class CatalogImportService
      * @throws Exception If there's an error establishing the RabbitMQ connection
      *
      * @uses AMQPStreamConnection For RabbitMQ connectivity
-     * @uses Storage For persisting the CSV to S3
-     * @uses Mail For sending email notifications via SES
-     * @uses Log For error logging
+     * @uses Filesystem For persisting the CSV to S3
+     * @uses Mailer For sending email notifications via SES
+     * @uses LoggerInterface For error logging
      */
     public function processExports(): void
     {
-        $connection = new AMQPStreamConnection(
-            config('rabbitmq.host'),
-            config('rabbitmq.port'),
-            config('rabbitmq.user'),
-            config('rabbitmq.password'),
-            config('rabbitmq.vhost')
+        $channel = $this->connection->channel();
+
+        $channel->queue_declare(
+            queue: 'catalog_export',
+            passive: false,
+            durable: true,
+            exclusive: false,
+            auto_delete: false
         );
 
-        $channel = $connection->channel();
-        $channel->queue_declare('catalog_export', false, true, false, false);
-
-        $callback = function ($msg) {
+        $callback = function (AMQPMessage $msg) {
             try {
-                $filename = 'catalog_export_' . now()->format('Ymd_His') . '.csv'; // todo: PSR-20 на самом деле усложнил, можно было просто наливную поддержку лары для очередей заюзать
+                $filename = 'catalog_export_' . Str::uuid() . '.csv';
+                $filePath = "exports/{$filename}";
 
-                Storage::disk('s3')->put("exports/{$filename}", $msg->body); // todo: заменить фасады этого класса на интерфейсы
-
-                Mail::mailer('ses')
-                    ->to(env('ADMIN_EMAIL')) // todo: лучше в конструктор
+                $this->storage->put($filePath, $msg->body);
+                $this->mailer->to($this->adminEmail)
                     ->send(new CatalogExported(
                         $filename,
-                        Storage::disk('s3')->temporaryUrl("exports/{$filename}", now()->addHour())
+                        $this->storage->temporaryUrl($filePath, now()->addHour())
                     ));
 
                 $msg->ack();
@@ -86,19 +88,25 @@ class CatalogImportService
                     'error' => $e->getMessage(),
                     'file' => $e->getFile(),
                     'line' => $e->getLine(),
-                    'trace' => $e->getTraceAsString()
                 ]);
                 $msg->nack();
             }
         };
 
-        $channel->basic_consume('catalog_export', '', false, false, false, false, $callback);
+        $channel->basic_consume(
+            queue: 'catalog_export',
+            consumer_tag: '',
+            no_local: false,
+            no_ack: false,
+            exclusive: false,
+            nowait: false,
+            callback: $callback
+        );
 
         while ($channel->is_consuming()) {
             $channel->wait();
         }
 
         $channel->close();
-        $connection->close();
     }
 }

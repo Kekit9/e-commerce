@@ -4,7 +4,6 @@ namespace App\Interfaces;
 
 use App\Models\Service;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 interface ServiceRepositoryInterface
@@ -12,13 +11,13 @@ interface ServiceRepositoryInterface
     /**
      * Get all services with relationships
      *
-     * @param Request $request
+     * @param array<string, mixed> $params Pagination/filtration params
      *
      * @return array{
      *     services: LengthAwarePaginator<Service>
      * }
      */
-    public function getAllServices(Request $request): array;
+    public function getAllServices(array $params): array;
 
     /**
      * Create a new service record

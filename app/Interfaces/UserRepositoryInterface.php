@@ -5,6 +5,7 @@ namespace App\Interfaces;
 use App\Models\User;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\QueryException;
+use Laravel\Sanctum\NewAccessToken;
 
 interface UserRepositoryInterface
 {
@@ -24,15 +25,7 @@ interface UserRepositoryInterface
      *
      * @param array<string, string> $credentials Authentication credentials (email, password)
      *
-     * @return array{
-     *      user: array{
-     *          id: int,
-     *          name: string,
-     *          email: string,
-     *          role: string
-     *      },
-     *      token: string
-     * }
+     * @return array{user: User, token: NewAccessToken}
      *
      * @throws AuthenticationException If authentication fails
      */

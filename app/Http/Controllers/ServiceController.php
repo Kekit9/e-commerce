@@ -5,13 +5,15 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateServiceRequest;
+use App\Http\Requests\ServiceListRequest;
 use App\Http\Requests\UpdateServiceRequest;
+use App\Http\Resources\ServiceResource;
 use App\Models\Service;
 use App\Services\ServiceService;
+use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 /**
  * @group Service Management
@@ -21,38 +23,29 @@ use Illuminate\Http\Request;
 class ServiceController extends Controller
 {
     /**
-     * The service instance
-     *
-     * @var ServiceService
-     */
-    protected ServiceService $serviceService;
-
-    /**
      * ServiceController constructor
      *
      * @param ServiceService $serviceService The service instance
      */
-    public function __construct(ServiceService $serviceService)
-    {
-        $this->serviceService = $serviceService;
+    public function __construct(
+        protected ServiceService $serviceService
+    ) {
     }
 
     /**
      * Get all services
      *
-     * @param Request $request
+     * @param ServiceListRequest $request
      *
      * @return JsonResponse filtered butch of items
      *
      * @throws AuthorizationException
+     * @throws Exception
      */
-    public function index(Request $request): JsonResponse
+    public function index(ServiceListRequest $request): JsonResponse
     {
         $this->authorize('viewAny', Service::class);
-
-        $services = $this->serviceService->getAllServices($request);
-
-        return response()->json($services);
+        return response()->json($this->serviceService->getAllServices($request->validated()));
     }
 
     /**
@@ -64,7 +57,8 @@ class ServiceController extends Controller
      */
     public function store(CreateServiceRequest $request): JsonResponse
     {
-        return $this->serviceService->createService($request->validated());
+        $service = $this->serviceService->createService($request->validated());
+        return response()->json(new ServiceResource($service));
     }
 
     /**

@@ -12,18 +12,15 @@ use Psr\Log\LoggerInterface;
 class RabbitMQService
 {
     /**
-     * @var LoggerInterface
-     */
-    private LoggerInterface $logger;
-
-    /**
      * RabbitMQService constructor.
      *
      * @param LoggerInterface $logger
+     * @param AMQPStreamConnection $connection
      */
-    public function __construct(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
+    public function __construct(
+        private readonly LoggerInterface $logger,
+        private readonly AMQPStreamConnection $connection
+    ) {
     }
 
     /**
@@ -42,22 +39,14 @@ class RabbitMQService
             'queue' => 'catalog_export'
         ]);
 
-        $connection = new AMQPStreamConnection(
-            config('rabbitmq.host'), // todo: такие штучки надо кидать в конструктор, а вообще в идеале готовый инстанс коннекшна получать в констурктор
-            config('rabbitmq.port'),
-            config('rabbitmq.user'),
-            config('rabbitmq.password'),
-            config('rabbitmq.vhost')
-        );
-
-        $channel = $connection->channel();
+        $channel = $this->connection->channel();
 
         $channel->queue_declare(
-            'catalog_export',
-            false, // todo: named parameters, сейчас сложно читать
-            true,
-            false,
-            false
+            queue: 'catalog_export',
+            passive: false,
+            durable: true,
+            exclusive: false,
+            auto_delete: false
         );
 
         $message = new AMQPMessage($content, [
@@ -67,6 +56,5 @@ class RabbitMQService
         $channel->basic_publish($message, '', 'catalog_export');
 
         $channel->close();
-        $connection->close();
     }
 }
