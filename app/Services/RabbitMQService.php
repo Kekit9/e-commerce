@@ -43,7 +43,7 @@ class RabbitMQService
         ]);
 
         $connection = new AMQPStreamConnection(
-            config('rabbitmq.host'),
+            config('rabbitmq.host'), // todo: такие штучки надо кидать в конструктор, а вообще в идеале готовый инстанс коннекшна получать в констурктор
             config('rabbitmq.port'),
             config('rabbitmq.user'),
             config('rabbitmq.password'),
@@ -54,7 +54,7 @@ class RabbitMQService
 
         $channel->queue_declare(
             'catalog_export',
-            false,
+            false, // todo: named parameters, сейчас сложно читать
             true,
             false,
             false

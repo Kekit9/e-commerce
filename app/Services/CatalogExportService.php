@@ -89,7 +89,7 @@ class CatalogExportService
                 'success' => false,
                 'message' => __('currency.export_failed'),
                 'error' => config('app.debug') ? $e->getMessage() : null
-            ];
+            ]; // todo: опять можно кинуть красивое исключение и возвращать void
         }
     }
 

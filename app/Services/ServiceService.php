@@ -17,6 +17,7 @@ class ServiceService
      *
      * @var ServiceRepositoryInterface
      */
+    // TODO: тут лучше использовать constructor property promotion, как и везде в других местах
     protected ServiceRepositoryInterface $serviceRepository;
 
     /**
@@ -35,6 +36,8 @@ class ServiceService
      * @param Request $request
      *
      * @return array<string, mixed>
+     *
+     * TODO: уровень сервисов не знает откуда данные пришли, уровень данных тем более не должен обладать этой инфой
      */
     public function getAllServices(Request $request): array
     {
@@ -47,6 +50,7 @@ class ServiceService
      * @param array<string, mixed> $data The service data to create
      *
      * @return JsonResponse Returns JSON response with the created service resource
+     * TODO: тут лучше возвращать сущность а на уровне контроллера трансформировать в Response
      */
     public function createService(array $data): JsonResponse
     {

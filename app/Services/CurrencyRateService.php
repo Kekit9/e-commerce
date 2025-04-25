@@ -18,7 +18,7 @@ class CurrencyRateService
      *
      * @var string
      */
-    public const DEFAULT_CURRENCY_URL = 'https://bankdabrabyt.by/export_courses.php';
+    public const DEFAULT_CURRENCY_URL = 'https://bankdabrabyt.by/export_courses.php'; // todo: ссылка должна приходить в конструктор, ты создал явную зависимость от этого доменного имени, поменяется у ребят хостинг и все будем сидеть плакать
 
     /**
      * Currency rate repository instance
@@ -59,12 +59,12 @@ class CurrencyRateService
                 'success' => true,
                 'message' => __('currency.updated'),
                 'rates' => $rates
-            ];
+            ]; // todo: тут можно было бы просто возвращать рэйты, без сообщений и пометки об успехе
         } catch (Exception $e) {
 
             return [
                 'success' => false,
-                'message' => $e->getMessage()
+                'message' => $e->getMessage() // todo:  а тут кидать красивый кастомный экспешн
             ];
         }
     }
@@ -97,12 +97,12 @@ class CurrencyRateService
 
         $xml = new SimpleXMLElement($response->body());
         $centralOffice = $xml->filials->filial[0];
-        $now = Carbon::now();
+        $now = Carbon::now(); // todo: PSR-20
 
         $rates = [];
         foreach ($centralOffice->rates->value as $value) {
             $iso = (string)$value['iso'];
-            if (in_array($iso, ['USD', 'EUR', 'RUB'])) {
+            if (in_array($iso, ['USD', 'EUR', 'RUB'])) { // todo: коды в константы
                 $rates[] = [
                     'currency_iso' => $iso,
                     'currency_code' => (string)$value['code'],

@@ -1,5 +1,5 @@
 version: '3.8'
-
+# todo: version is deprecated + please add Makefile
 services:
   # PHP-FPM service
   app:
@@ -24,6 +24,7 @@ services:
     container_name: mysql-db
     restart: always
     environment:
+        # todo: вынести в переменные среды
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: laravel_db
       MYSQL_USER: user
@@ -36,6 +37,8 @@ services:
       - "3306:3306"
 
   # phpmyadmin service (optional for database management via web UI)
+
+  # todo: дырка в безопасности
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     container_name: phpmyadmin

@@ -33,7 +33,7 @@ class CatalogExported extends Mailable
      */
     public function build()
     {
-        return $this->from(config('mail.from.address'))
+        return $this->from(config('mail.from.address')) // todo: constructor
             ->subject(__('catalog.exported_successfully'))
             ->view('emails.catalog-exported')
             ->with([

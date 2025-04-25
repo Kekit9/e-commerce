@@ -22,6 +22,7 @@ class CatalogImportService
 {
     /**
      * @var LoggerInterface
+     * todo: докблоки не обязательно прям везде иметь, тока где массивы или ругается пхп стан или реально нужен коммент
      */
     private LoggerInterface $logger;
 
@@ -68,12 +69,12 @@ class CatalogImportService
 
         $callback = function ($msg) {
             try {
-                $filename = 'catalog_export_' . now()->format('Ymd_His') . '.csv';
+                $filename = 'catalog_export_' . now()->format('Ymd_His') . '.csv'; // todo: PSR-20 на самом деле усложнил, можно было просто наливную поддержку лары для очередей заюзать
 
-                Storage::disk('s3')->put("exports/{$filename}", $msg->body);
+                Storage::disk('s3')->put("exports/{$filename}", $msg->body); // todo: заменить фасады этого класса на интерфейсы
 
                 Mail::mailer('ses')
-                    ->to(env('ADMIN_EMAIL'))
+                    ->to(env('ADMIN_EMAIL')) // todo: лучше в конструктор
                     ->send(new CatalogExported(
                         $filename,
                         Storage::disk('s3')->temporaryUrl("exports/{$filename}", now()->addHour())

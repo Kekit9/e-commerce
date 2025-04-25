@@ -39,6 +39,7 @@ class UserRepository implements UserRepositoryInterface
      *  }
      *
      * @throws AuthenticationException
+     * todo: чуть чуть не уровень данных
      */
     public function attemptLogin(array $credentials): array
     {
