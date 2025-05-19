@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Services\CurrencyRateService;
+use App\Services\RabbitMQ\CurrencyRate\CurrencyRateService;
 use Exception;
 use Illuminate\Console\Command;
 

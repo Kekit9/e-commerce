@@ -8,26 +8,20 @@ use App\Http\Requests\CreateProductRequest;
 use App\Http\Requests\GetProductsRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Product;
-use App\Services\ProductService;
+use App\Services\Product\Interface\ProductServiceInterface;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
-/**
- * @group Product Management
- *
- * APIs for managing products
- */
 class ProductController extends Controller
 {
     /**
      * ProductController constructor
      *
-     * @param ProductService $productService The product service
+     * @param ProductServiceInterface $productService The product service
      */
     public function __construct(
-        protected ProductService $productService
+        protected ProductServiceInterface $productService
     ) {
     }
 

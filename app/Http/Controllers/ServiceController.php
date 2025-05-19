@@ -9,26 +9,21 @@ use App\Http\Requests\ServiceListRequest;
 use App\Http\Requests\UpdateServiceRequest;
 use App\Http\Resources\ServiceResource;
 use App\Models\Service;
-use App\Services\ServiceService;
+use App\Services\Service\Interface\ServiceServiceInterface;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 
-/**
- * @group Service Management
- *
- * APIs for managing services
- */
 class ServiceController extends Controller
 {
     /**
      * ServiceController constructor
      *
-     * @param ServiceService $serviceService The service instance
+     * @param ServiceServiceInterface $serviceService The service instance
      */
     public function __construct(
-        protected ServiceService $serviceService
+        protected ServiceServiceInterface $serviceService
     ) {
     }
 
@@ -45,6 +40,7 @@ class ServiceController extends Controller
     public function index(ServiceListRequest $request): JsonResponse
     {
         $this->authorize('viewAny', Service::class);
+
         return response()->json($this->serviceService->getAllServices($request->validated()));
     }
 
@@ -58,6 +54,7 @@ class ServiceController extends Controller
     public function store(CreateServiceRequest $request): JsonResponse
     {
         $service = $this->serviceService->createService($request->validated());
+
         return response()->json(new ServiceResource($service));
     }
 

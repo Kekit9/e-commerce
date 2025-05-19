@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Repositories\ProductRepository;
+use App\Repositories\Product\ProductRepository;
 use Illuminate\Foundation\Http\FormRequest;
 
 class GetProductsRequest extends FormRequest

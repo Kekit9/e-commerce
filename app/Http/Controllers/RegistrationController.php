@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Http\Requests\RegisterRequest;
-use App\Services\RegistrationService;
+use App\Services\Registration\Interface\RegistrationServiceInterface;
 use Illuminate\Http\JsonResponse;
 
 class RegistrationController extends Controller
@@ -13,10 +13,10 @@ class RegistrationController extends Controller
     /**
      * RegistrationController constructor
      *
-     * @param RegistrationService $registrationService The registration service
+     * @param RegistrationServiceInterface $registrationService The registration service
      */
     public function __construct(
-        protected RegistrationService $registrationService
+        protected RegistrationServiceInterface $registrationService
     ) {
     }
 

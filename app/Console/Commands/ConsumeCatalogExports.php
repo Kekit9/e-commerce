@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Services\CatalogImportService;
+use App\Services\RabbitMQ\CatalogImport\CatalogImportService;
 use Exception;
 use Illuminate\Console\Command;
 

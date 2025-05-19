@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Services\CatalogExportService;
+use App\Services\RabbitMQ\CatalogExport\Interface\CatalogExportServiceInterface;
 use Illuminate\Http\JsonResponse;
 use League\Csv\Exception;
 use Psr\Log\LoggerInterface;
@@ -13,17 +13,17 @@ use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 class ExportController extends Controller
 {
     /**
-     * @param CatalogExportService $catalogExportService
+     * @param CatalogExportServiceInterface $catalogExportService
      * @param LoggerInterface $logger
      */
     public function __construct(
-        protected CatalogExportService $catalogExportService,
+        protected CatalogExportServiceInterface $catalogExportService,
         protected LoggerInterface $logger
     ) {
     }
 
     /**
-     * Export catalog in AWS S3 storage in CSV format
+     * Export catalog to CSV and publish to RabbitMQ queue
      *
      * @return JsonResponse
      *

@@ -5,17 +5,17 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AuthorizationRequest;
-use App\Services\AuthorizationService;
+use App\Services\Authorization\Interface\AuthorizationServiceInterface;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\JsonResponse;
 
 class AuthorizationController extends Controller
 {
     /**
-     * @param AuthorizationService $authorizationService
+     * @param AuthorizationServiceInterface $authorizationService
      */
     public function __construct(
-        protected AuthorizationService $authorizationService
+        protected AuthorizationServiceInterface $authorizationService
     ) {
     }
 
